@@ -34,6 +34,7 @@ const intlMap = {
   zhCNIntl,
   enUSIntl
 }
+
 class ProTable extends Component<IProTableProps, any> {
   // pro-table 未对批量操作进行封装，自己封了
   state = {
@@ -118,40 +119,41 @@ class ProTable extends Component<IProTableProps, any> {
             typeof this.props.search === 'boolean'
               ? this.props.search
               : {
-                ...this.props.search,
-                collapsed,
-                onCollapse: () => {
-                  if (this.props.search === false) return
-                  this.setState({
-                    collapsed: !collapsed
-                  })
-                  if (this.props.search.onCollapse) {
-                    // 如果设置了函数则继续执行
-                    this.props.search.onCollapse(!collapsed)
+                  ...this.props.search,
+                  collapsed,
+                  onCollapse: () => {
+                    if (this.props.search === false) return
+                    this.setState({
+                      collapsed: !collapsed
+                    })
+                    if (this.props.search.onCollapse) {
+                      // 如果设置了函数则继续执行
+                      this.props.search.onCollapse(!collapsed)
+                    }
                   }
                 }
-              }
           }
           rowSelection={
             rowSelection
               ? {
-                ...rowSelection,
-                defaultSelectedRowKeys: selectedRowKeys,
-                selectedRowKeys,
-                onChange: (...args) => {
-                  rowSelection?.onChange?.(...args)
-                  this.onSelectRowsChange(...args)
+                  ...rowSelection,
+                  defaultSelectedRowKeys: selectedRowKeys,
+                  selectedRowKeys,
+                  onChange: (...args) => {
+                    rowSelection?.onChange?.(...args)
+                    this.onSelectRowsChange(...args)
+                  }
                 }
-              }
               : false
           }
           columns={columns}
           actionRef={this.actionRef}
           formRef={this.formRef}
-          form={{ onValuesChange }}
+          form={{ onValuesChange: onValuesChange }}
         />
       </ConfigProvider>
     )
   }
 }
-export default ProTable;
+
+export default ProTable

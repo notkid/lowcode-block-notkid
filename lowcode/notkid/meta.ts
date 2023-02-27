@@ -1,5 +1,6 @@
 
 import { ComponentMetadata, Snippet } from '@alilc/lowcode-types';
+
 import { uuid } from '../../src/shared/index'
 
 const NotkidMeta: ComponentMetadata = {
@@ -11,12 +12,12 @@ const NotkidMeta: ComponentMetadata = {
   group: '高级组件',
   category: '表格类',
   npm: {
-    package: '@seada/antd-materials',
-    version: 'latest',
-    exportName: 'Notkid',
-    main: '',
-    destructuring: true,
-    subName: ''
+    package: 'notkid',
+    subName: '',
+    "version": "0.1.0",
+    "exportName": "default",
+    "main": "src\\index.tsx",
+    "destructuring": false,
   },
   configure: {
     props: [
@@ -36,6 +37,12 @@ const NotkidMeta: ComponentMetadata = {
         display: 'block',
         type: 'group',
         items: [
+          {
+            name: 'dataUrl',
+            title: { label: '表格url', tip: 'dataSource | 表格数据' },
+            propType: 'object',
+            setter: 'JsonSetter'
+          },
           {
             name: 'dataSource',
             title: { label: '表格数据', tip: 'dataSource | 表格数据' },
@@ -1897,4 +1904,4 @@ export const snippets: Snippet[] = [
 export default {
   ...NotkidMeta,
   snippets
-};
+}
