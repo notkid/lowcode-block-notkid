@@ -1,0 +1,13 @@
+node_modules
+yarn-error.log
+dist
+lib
+esm
+es
+package-lock.json
+.tmp
+build
+.DS_Store
+npm
+.fie
+.vscode
