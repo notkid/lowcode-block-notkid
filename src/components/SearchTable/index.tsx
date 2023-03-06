@@ -10,7 +10,7 @@ import type { TablePaginationConfig } from 'antd'
 import { Tag, ConfigProvider, Modal } from 'antd'
 import zhCNIntl from 'antd/es/locale/zh_CN'
 import enUSIntl from 'antd/es/locale/en_US'
-import { defineGetterProperties, isPlainObj } from '../shared/index'
+import { defineGetterProperties, isPlainObj } from '../../shared/index'
 import { FormProps } from 'rc-field-form/lib/Form'
 
 interface IValueEnum {

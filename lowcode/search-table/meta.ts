@@ -12,12 +12,12 @@ const NotkidMeta: ComponentMetadata = {
   group: '高级组件',
   category: '表格类',
   npm: {
-    package: 'notkid',
+    package: '@seada/antd-materials',
     subName: '',
-    "version": "0.1.0",
-    "exportName": "default",
-    "main": "src\\index.tsx",
-    "destructuring": false,
+    version: 'latest',
+    "exportName": "SearchTable",
+    // "main": "src\\index.tsx",
+    "destructuring": true,
   },
   configure: {
     props: [

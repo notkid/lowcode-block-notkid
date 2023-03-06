@@ -1,1 +1,1 @@
-export { SearchTable } from './SearchTable'
+export { SearchTable } from './components/SearchTable'
