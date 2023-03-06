@@ -40,8 +40,20 @@ const NotkidMeta: ComponentMetadata = {
           {
             name: 'dataUrl',
             title: { label: '表格url', tip: 'dataSource | 表格数据' },
-            propType: 'object',
-            setter: 'JsonSetter'
+            propType: { type: 'oneOfType', value: ['string', 'object'] },
+            setter: ['StringSetter', 'CustomSetter',]
+          },
+          {
+            name: 'showOption',
+            title: { label: '显示操作列', tip: '显示操作列' },
+            propType: 'bool',
+            setter: ['BoolSetter',]
+          },
+          {
+            name: 'deleteUrl',
+            title: { label: '删除url', tip: 'dataSource | 表格数据' },
+            propType: { type: 'oneOfType', value: ['string', 'object'] },
+            setter: ['StringSetter', 'CustomSetter',]
           },
           {
             name: 'dataSource',
@@ -1707,60 +1719,60 @@ export const snippets: Snippet[] = [
         dataSource: getDataSource(),
         columns: [
           ...getColumns(),
-          {
-            title: '操作',
-            dataIndex: 'options',
-            valueType: 'option',
-            align: 'left',
-            fixed: '',
-            render: {
-              type: 'JSSlot',
-              params: ['text', 'record', 'index'],
-              value: [
-                {
-                  componentName: 'Button',
-                  props: {
-                    type: 'link',
-                    children: '编辑',
-                    htmlType: 'button',
-                    size: 'small',
-                    shape: 'default',
-                    block: false,
-                    danger: false,
-                    ghost: false,
-                    disabled: false,
-                    icon: ''
-                  }
-                },
-                {
-                  componentName: 'ProPopconfirm',
-                  props: {
-                    title: '确定删除?',
-                    okType: 'primary',
-                    okText: '确定',
-                    cancelText: '取消'
-                  },
-                  children: [
-                    {
-                      componentName: 'Button',
-                      props: {
-                        children: '删除',
-                        htmlType: 'button',
-                        type: 'link',
-                        size: 'small',
-                        shape: 'default',
-                        block: false,
-                        danger: true,
-                        ghost: false,
-                        disabled: false,
-                        icon: ''
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          }
+          // {
+          //   title: '操作',
+          //   dataIndex: 'options',
+          //   valueType: 'option',
+          //   align: 'left',
+          //   fixed: '',
+          //   render: {
+          //     type: 'JSSlot',
+          //     params: ['text', 'record', 'index'],
+          //     value: [
+          //       {
+          //         componentName: 'Button',
+          //         props: {
+          //           type: 'link',
+          //           children: '编辑',
+          //           htmlType: 'button',
+          //           size: 'small',
+          //           shape: 'default',
+          //           block: false,
+          //           danger: false,
+          //           ghost: false,
+          //           disabled: false,
+          //           icon: ''
+          //         }
+          //       },
+          //       {
+          //         componentName: 'ProPopconfirm',
+          //         props: {
+          //           title: '确定删除?',
+          //           okType: 'primary',
+          //           okText: '确定',
+          //           cancelText: '取消'
+          //         },
+          //         children: [
+          //           {
+          //             componentName: 'Button',
+          //             props: {
+          //               children: '删除',
+          //               htmlType: 'button',
+          //               type: 'link',
+          //               size: 'small',
+          //               shape: 'default',
+          //               block: false,
+          //               danger: true,
+          //               ghost: false,
+          //               disabled: false,
+          //               icon: ''
+          //             }
+          //           }
+          //         ]
+          //       }
+          //     ]
+          //   }
+          // }
         ],
         rowKey: 'id',
         pagination: {

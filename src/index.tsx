@@ -7,7 +7,7 @@ import {
 } from '@ant-design/pro-components'
 import type { ProFormInstance } from '@ant-design/pro-components'
 import type { TablePaginationConfig } from 'antd'
-import { Tag, ConfigProvider } from 'antd'
+import { Tag, ConfigProvider, Modal } from 'antd'
 import zhCNIntl from 'antd/es/locale/zh_CN'
 import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from './shared/index'
@@ -28,6 +28,7 @@ export type IProTableProps = React.ComponentProps<typeof OriginalProTable> & {
   columns?: IExtendsColType
   intl?: string
   onValuesChange?: FormProps['onValuesChange']
+  dataUrl?: string
 }
 
 const intlMap = {
@@ -78,10 +79,91 @@ class ProTable extends Component<IProTableProps, any> {
     defineGetterProperties(this, [this.actionRef, this.formRef])
   }
 
+  async deleteItem(item, dataUrl) {
+    let method = 'POST'
+    if (dataUrl?.method) {
+      method = dataUrl.method
+    }
+
+    let url = dataUrl
+    if (dataUrl?.url) {
+      url = dataUrl.url
+    }
+    const msg = await window.request(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: {
+        ...item
+      },
+    }, {})
+  }
+
   render() {
-    const { columns, rowSelection, intl, onValuesChange } = this.props
+    const {
+      columns,
+      rowSelection,
+      intl,
+      onValuesChange,
+      dataUrl,
+      request,
+      showOption,
+      deleteUrl
+    } = this.props
 
     const { selectedRowKeys, collapsed } = this.state
+
+    let finalRequest = request
+
+    if (dataUrl) {
+      finalRequest = async (
+        // 第一个参数 params 查询表单和 params 参数的结合
+        // 第一个参数中一定会有 pageSize 和  current ，这两个参数是 antd 的规范
+        params
+      ) => {
+        // 这里需要返回一个 Promise,在返回之前你可以进行数据转化
+        // 如果需要转化参数可以在这里进行修改
+        const { current, pageSize, dateRange, ...rest } = params;
+        const query: {
+          page?: number | undefined;
+          size?: number | undefined;
+          createdTimeFrom?: string | undefined;
+          createdTimeTo?: string | undefined;
+        } = {
+          page: current,
+          size: pageSize,
+        };
+        let method = 'POST'
+        if (dataUrl?.method) {
+          method = dataUrl.method
+        }
+
+        let url = dataUrl
+        if (dataUrl?.url) {
+          url = dataUrl.url
+        }
+        const msg = await window.request(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: {
+            ...rest,
+            ...query,
+          },
+        }, {})
+        return {
+          data: msg.payload?.content,
+          // success 请返回 true，
+          // 不然 table 会停止解析数据，即使有数据
+          // success: msg.code === '0',
+          success: true,
+          // 不传会使用 data 的长度，如果是分页一定要传
+          total: msg.payload?.totalElements,
+        };
+      }
+    }
 
     // 劫持渲染标签类型的列
     columns?.map((item) => {
@@ -99,6 +181,49 @@ class ProTable extends Component<IProTableProps, any> {
         }
       }
     })
+
+    if (showOption) {
+      const options = {
+        title: '操作',
+        dataIndex: 'option',
+        valueType: 'option',
+        render: (text, record) => [
+          // <a
+          //   key="detailApp"
+          //   onClick={() => {
+          //     getClientDetail({ clientId: record?.clientId });
+          //     handleSecretModalVisible(true);
+          //   }}
+          // >
+          //   查看秘钥
+          // </a>,
+          // <a
+          //   key="editApp"
+          //   onClick={() => {
+          //     handleUpdateModalVisible(true);
+          //     setCurrentApp(record);
+          //   }}
+          // >
+          //   编辑
+          // </a>,
+          deleteUrl && <a
+            key="deleteApp"
+            onClick={() => {
+              Modal.confirm({
+                title: '删除平台',
+                content: '确定删除吗？',
+                okText: '确认',
+                cancelText: '取消',
+                onOk: () => this.deleteItem({ id: record.id }, deleteUrl),
+              });
+            }}
+          >
+            删除
+          </a>,
+        ],
+      }
+      columns.push(options)
+    }
 
     const pagination = this.props.pagination as TablePaginationConfig
 
@@ -119,37 +244,38 @@ class ProTable extends Component<IProTableProps, any> {
             typeof this.props.search === 'boolean'
               ? this.props.search
               : {
-                  ...this.props.search,
-                  collapsed,
-                  onCollapse: () => {
-                    if (this.props.search === false) return
-                    this.setState({
-                      collapsed: !collapsed
-                    })
-                    if (this.props.search.onCollapse) {
-                      // 如果设置了函数则继续执行
-                      this.props.search.onCollapse(!collapsed)
-                    }
+                ...this.props.search,
+                collapsed,
+                onCollapse: () => {
+                  if (this.props.search === false) return
+                  this.setState({
+                    collapsed: !collapsed
+                  })
+                  if (this.props.search.onCollapse) {
+                    // 如果设置了函数则继续执行
+                    this.props.search.onCollapse(!collapsed)
                   }
                 }
+              }
           }
           rowSelection={
             rowSelection
               ? {
-                  ...rowSelection,
-                  defaultSelectedRowKeys: selectedRowKeys,
-                  selectedRowKeys,
-                  onChange: (...args) => {
-                    rowSelection?.onChange?.(...args)
-                    this.onSelectRowsChange(...args)
-                  }
+                ...rowSelection,
+                defaultSelectedRowKeys: selectedRowKeys,
+                selectedRowKeys,
+                onChange: (...args) => {
+                  rowSelection?.onChange?.(...args)
+                  this.onSelectRowsChange(...args)
                 }
+              }
               : false
           }
           columns={columns}
           actionRef={this.actionRef}
           formRef={this.formRef}
-          form={{ onValuesChange: onValuesChange }}
+          form={{ onValuesChange }}
+          request={finalRequest}
         />
       </ConfigProvider>
     )
