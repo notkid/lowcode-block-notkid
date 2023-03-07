@@ -59,17 +59,18 @@ const EditTable = (props: any) => {
       key: 'option',
       width: "200px",
       render: (text, record, _, action) => extraButtons.filter(v => v).map((button: any) => {
-        return <a onClick={() => {
+        return <a onClick={(e) => {
+          e.preventDefault();
           if (button.buttonType === 'url') {
-            history.go(`${button.url}?id=${record.id}`)
+            button.url && history.pushState({}, {},`${button.url}?id=${record.id}`)
           } else if (button.buttonType === "request") {
-            request(button.url, record)
-
+            button.url && request(button.url, record)
           } else if (button.buttonType === "editInline") {
             action?.startEditable?.(record.id);
           }
-        }} target="_blank" rel="noopener noreferrer" key="view">
-          {button.label && button.label}
+          return false
+        }} rel="noopener noreferrer">
+          {button.label || ''}
         </a>
       })
       // [
