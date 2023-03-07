@@ -1,71 +1,71 @@
 {
-  "name": "@notkid/lowcode-materials",
-  "version": "0.1.0",
-  "description": "k",
-  "files": [
-    "demo/",
-    "es/",
-    "lib/",
-    "build",
-    "dist"
-  ],
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "stylePath": "style.js",
-  "scripts": {
-    "start": "build-scripts start",
-    "build": "build-scripts build",
-    "lowcode:dev": "build-scripts start --config ./build.lowcode.js",
-    "lowcode:build": "build-scripts build --config ./build.lowcode.js",
-    "test": "build-scripts test",
-    "prepublishOnly": "npm run build && npm run lowcode:build",
-    "eslint": "eslint --cache --ext .js,.jsx ./",
-    "eslint:fix": "npm run eslint -- --fix",
-    "stylelint": "stylelint \"**/*.{css,scss,less}\"",
-    "lint": "npm run eslint && npm run stylelint",
-    "f2elint-scan": "f2elint scan",
-    "f2elint-fix": "f2elint fix"
-  },
-  "keywords": [
-    "ice",
-    "react",
-    "component"
-  ],
-  "dependencies": {
-    "@alifd/next": "^1.25.27",
-    "@ant-design/pro-components": "^2.3.57",
-    "@types/react": "^18.0.14",
-    "antd": "^5.2.2",
-    "react": "^16.x",
-    "react-dom": "^16.x",
-    "yarn": "^1.22.19"
-  },
-  "devDependencies": {
-    "@alib/build-scripts": "^0.1.3",
-    "@alifd/build-plugin-lowcode": "^0.3.0",
-    "@types/react": "^16.9.13",
-    "@types/react-dom": "^16.9.4",
-    "build-plugin-component": "^1.0.0",
-    "build-plugin-fusion": "^0.1.0",
-    "build-plugin-moment-locales": "^0.1.0",
-    "f2elint": "^1.2.0",
-    "template-component-demo": "^2.0.3"
-  },
-  "peerDependencies": {
-    "antd": ">=4.20.2",
-    "moment": "latest",
-    "react": "^16.x",
-    "react-dom": "^16.x",
-    "rc-field-form": "^1.27.4"
-  },
-  "resolutions": {
-    "webpack": "^4.46.x"
-  },
-  "componentConfig": {
-    "name": "ExampleComponent",
-    "title": "demo component",
-    "category": "Information",
-    "materialSchema": "https://unpkg.com/@notkid/lowcode-materials@0.1.0/build/lowcode/assets-prod.json"
-  },
-  "license": "MIT"
+    "name": "@notkid/lowcode-materials",
+    "version": "0.1.0",
+    "description": "k",
+    "files": [
+        "demo/",
+        "es/",
+        "lib/",
+        "build",
+        "dist"
+    ],
+    "main": "lib/index.js",
+    "module": "es/index.js",
+    "stylePath": "style.js",
+    "scripts": {
+        "start": "build-scripts start",
+        "build": "build-scripts build",
+        "lowcode:dev": "build-scripts start --config ./build.lowcode.js",
+        "lowcode:build": "build-scripts build --config ./build.lowcode.js",
+        "test": "build-scripts test",
+        "prepublishOnly": "npm run build && npm run lowcode:build",
+        "eslint": "eslint --cache --ext .js,.jsx ./",
+        "eslint:fix": "npm run eslint -- --fix",
+        "stylelint": "stylelint \"**/*.{css,scss,less}\"",
+        "lint": "npm run eslint && npm run stylelint",
+        "f2elint-scan": "f2elint scan",
+        "f2elint-fix": "f2elint fix"
+    },
+    "keywords": [
+        "ice",
+        "react",
+        "component"
+    ],
+    "dependencies": {
+        "@alifd/next": "^1.25.27",
+        "@ant-design/pro-components": "^2.3.57",
+        "@types/react": "^18.0.14",
+        "antd": "^5.2.2",
+        "react": "^16.x",
+        "react-dom": "^16.x",
+        "yarn": "^1.22.19"
+    },
+    "devDependencies": {
+        "@alib/build-scripts": "^0.1.3",
+        "@alifd/build-plugin-lowcode": "^0.3.0",
+        "@types/react": "^16.9.13",
+        "@types/react-dom": "^16.9.4",
+        "build-plugin-component": "^1.0.0",
+        "build-plugin-fusion": "^0.1.0",
+        "build-plugin-moment-locales": "^0.1.0",
+        "f2elint": "^1.2.0",
+        "template-component-demo": "^2.0.3"
+    },
+    "peerDependencies": {
+        "antd": ">=4.20.2",
+        "moment": "latest",
+        "react": "^16.x",
+        "react-dom": "^16.x",
+        "rc-field-form": "^1.27.4"
+    },
+    "resolutions": {
+        "webpack": "^4.46.x"
+    },
+    "componentConfig": {
+        "name": "ExampleComponent",
+        "title": "demo component",
+        "category": "Information",
+        "materialSchema": "https://unpkg.com/notkid@0.1.0/build/lowcode/assets-prod.json"
+    },
+    "license": "MIT"
 }
