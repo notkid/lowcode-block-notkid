@@ -43,17 +43,12 @@ const NotkidMeta: ComponentMetadata = {
             propType: { type: 'oneOfType', value: ['string', 'object'] },
             setter: ['StringSetter', 'CustomSetter',]
           },
+
           {
-            name: 'showOption',
-            title: { label: '显示操作列', tip: '显示操作列' },
-            propType: 'bool',
-            setter: ['BoolSetter',]
-          },
-          {
-            name: 'deleteUrl',
-            title: { label: '删除url', tip: 'dataSource | 表格数据' },
-            propType: { type: 'oneOfType', value: ['string', 'object'] },
-            setter: ['StringSetter', 'CustomSetter',]
+            name: 'treeRenderField',
+            title: { label: 'treeRenderField', tip: 'dataSource | 表格数据' },
+            propType: 'string',
+            setter: 'StringSetter'
           },
           {
             name: 'dataSource',
@@ -564,6 +559,26 @@ const NotkidMeta: ComponentMetadata = {
             }
           }
         }
+      },
+      {
+        title: '操作列',
+        display: 'block',
+        type: 'group',
+        items: [
+          {
+            name: 'showOption',
+            title: { label: '显示操作列', tip: '显示操作列' },
+            propType: 'bool',
+            setter: ['BoolSetter',]
+          },
+                 
+          {
+            name: 'deleteUrl',
+            title: { label: '删除url', tip: 'dataSource | 表格数据' },
+            propType: { type: 'oneOfType', value: ['string', 'object'] },
+            setter: ['StringSetter', 'CustomSetter',]
+          },
+        ]
       },
       {
         title: '外观',

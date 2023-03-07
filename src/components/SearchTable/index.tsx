@@ -109,7 +109,8 @@ class SearchTable extends Component<IProTableProps, any> {
       dataUrl,
       request,
       showOption,
-      deleteUrl
+      deleteUrl,
+      treeRenderField,
     } = this.props
 
     const { selectedRowKeys, collapsed } = this.state
@@ -153,8 +154,18 @@ class SearchTable extends Component<IProTableProps, any> {
             ...query,
           },
         }, {})
+        let data = msg.payload?.content
+        if (treeRenderField) {
+          data = data.map(item => {
+            return {
+              ...item,
+              children: item[treeRenderField] || []
+            }
+          })
+        }
+
         return {
-          data: msg.payload?.content,
+          data,
           // success 请返回 true，
           // 不然 table 会停止解析数据，即使有数据
           // success: msg.code === '0',
@@ -236,6 +247,21 @@ class SearchTable extends Component<IProTableProps, any> {
       delete pagination.total
     }
 
+    // const expandable = {
+    //   childrenColumnName: 'distributeList',
+    //   rowExpandable(record) {
+    //     return true;
+    //   }
+    // }
+    // if (treeRenderField) {
+    //   expandable = {
+    //     childrenColumnName: treeRenderField,
+    //     rowExpandable(record) {
+    //       return !!record?.[treeRenderField]?.length;
+    //     },
+    //   }
+    // }
+
     return (
       <ConfigProvider locale={intlMap[intl || 'zhCNIntl']}>
         <OriginalProTable
@@ -271,6 +297,7 @@ class SearchTable extends Component<IProTableProps, any> {
               }
               : false
           }
+          // expandable={expandable}
           columns={columns}
           actionRef={this.actionRef}
           formRef={this.formRef}
