@@ -1,5 +1,5 @@
 {
-  "name": "@seada/antd-materials",
+  "name": "@notkid/lowcode-materials",
   "version": "0.1.0",
   "description": "k",
   "files": [
@@ -65,7 +65,7 @@
     "name": "ExampleComponent",
     "title": "demo component",
     "category": "Information",
-    "materialSchema": "https://unpkg.com/notkid@0.1.0/build/lowcode/assets-prod.json"
+    "materialSchema": "https://unpkg.com/@notkid/lowcode-materials@0.1.0/build/lowcode/assets-prod.json"
   },
   "license": "MIT"
 }

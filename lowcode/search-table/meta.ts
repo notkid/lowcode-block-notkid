@@ -12,11 +12,11 @@ const NotkidMeta: ComponentMetadata = {
   group: '高级组件',
   category: '表格类',
   npm: {
-    package: '@seada/antd-materials',
+    package: '@notkid/lowcode-materials',
     subName: '',
-    version: 'latest',
+    "version": "0.1.0",
     "exportName": "SearchTable",
-    // "main": "src\\index.tsx",
+    "main": "src\\index.tsx",
     "destructuring": true,
   },
   configure: {

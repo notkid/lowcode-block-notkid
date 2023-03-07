@@ -4,7 +4,7 @@ import { ComponentMetadata, Snippet } from '@alilc/lowcode-types';
 import { uuid } from '../../src/shared/index'
 
 const NotkidMeta: ComponentMetadata = {
-  componentName: 'Notkid',
+  componentName: 'DemoTable',
   title: '高级表格',
   docUrl: '',
   screenshot: '',
@@ -12,12 +12,12 @@ const NotkidMeta: ComponentMetadata = {
   group: '高级组件',
   category: '表格类',
   npm: {
-    package: 'notkid',
+    package: '@notkid/lowcode-materials',
     subName: '',
     "version": "0.1.0",
-    "exportName": "default",
+    "exportName": "DemoTable",
     "main": "src\\index.tsx",
-    "destructuring": false,
+    "destructuring": true,
   },
   configure: {
     props: [
@@ -1709,11 +1709,11 @@ const getDataSource = () => {
 
 export const snippets: Snippet[] = [
   {
-    title: 'CRUD 表格',
+    title: 'CRUD 表格1',
     screenshot:
       'https://alifd.alicdn.com/fusion-cool/icons/icon-antd/table-1.png',
     schema: {
-      componentName: 'Notkid',
+      componentName: 'DemoTable',
       props: {
         cardBordered: true,
         dataSource: getDataSource(),
@@ -1827,7 +1827,7 @@ export const snippets: Snippet[] = [
     screenshot:
       'https://alifd.alicdn.com/fusion-cool/icons/icon-antd/table-1.png',
     schema: {
-      componentName: 'Notkid',
+      componentName: 'DemoTable',
       props: {
         cardBordered: true,
         dataSource: getDataSource(),
@@ -1851,7 +1851,7 @@ export const snippets: Snippet[] = [
     screenshot:
       'https://alifd.alicdn.com/fusion-cool/icons/icon-antd/table-1.png',
     schema: {
-      componentName: 'Notkid',
+      componentName: 'DemoTable',
       props: {
         cardBordered: true,
         dataSource: getDataSource(),
@@ -1866,7 +1866,7 @@ export const snippets: Snippet[] = [
             params: ['record', 'index', 'indent', 'expanded'],
             value: [
               {
-                componentName: 'Notkid',
+                componentName: 'DemoTable',
                 props: {
                   columns: [
                     { title: 'Date', dataIndex: 'date', key: 'date' },
