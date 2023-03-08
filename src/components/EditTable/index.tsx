@@ -3,7 +3,6 @@ import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable, TableDropdown } from '@ant-design/pro-components';
 import { Button, Dropdown, Space, Tag } from 'antd';
 import { useRef } from 'react';
-import request from 'umi-request'
 
 type GithubIssueItem = {
   url: string;

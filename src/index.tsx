@@ -1,4 +1,8 @@
 export { SearchTable } from './components/SearchTable'
 export { SearchTable as DemoTable } from './components/SearchTable'
+export { SearchTable as DemoTable2 } from './components/SearchTable'
 export { EditTable } from './components/EditTable'
-
+export { SchemaForm as BBSchemaForm } from './components/SchemaForm'
+export { SchemaForm as BetachemaForm } from './components/SchemaForm'
+// export { SchemaForm as BaseSchemaForm } from './components/SchemaForm'
+// export type { IBetaSchemaFormProps } from './components/SchemaForm'

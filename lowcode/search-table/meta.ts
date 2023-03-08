@@ -581,6 +581,62 @@ const NotkidMeta: ComponentMetadata = {
         ]
       },
       {
+        name: 'extraButtons',
+        title: {
+          label: '操作栏按钮配置'
+        },
+        setter: {
+          componentName: 'ArraySetter',
+          props: {
+            itemSetter: {
+              componentName: 'ObjectSetter',
+              props: {
+                config: {
+                  items: [
+                    {
+                      name: 'label',
+                      title: { label: '按钮名称', tip: 'dataIndex | 数据字段' },
+                      propType: 'string',
+                      setter: 'StringSetter',
+                      isRequired: true
+                    },
+                    {
+                      name: 'buttonType',
+                      title: { label: '按钮类型', tip: 'valueType | 数据类型' },
+                      propType: 'string',
+                      isRequired: true,
+                      setter: {
+                        componentName: 'SelectSetter',
+                        props: {
+                          options: [
+                            {
+                              title: '跳转到新页面',
+                              value: 'url'
+                            },
+                            {
+                              title: '普通请求',
+                              value: 'request'
+                            },
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      name: 'url',
+                      title: { label: '请求地址' },
+                      propType: 'string',
+                      setter: 'StringSetter',
+                      isRequired: false
+                    },
+
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      {
         title: '外观',
         display: 'block',
         type: 'group',

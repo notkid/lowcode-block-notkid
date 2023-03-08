@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { Component, createRef } from 'react'
 import {
-  ProTable as OriginalProTable,
+  BetaSchemaForm as OriginalBetaSchemaForm,
+  ProForm as OriginalProForm,
   ActionType,
   ProColumnType
 } from '@ant-design/pro-components'
@@ -24,7 +25,7 @@ type IExtendsColType = ProColumnType & {
   renderTag?: boolean
 }
 
-export type IProTableProps = React.ComponentProps<typeof OriginalProTable> & {
+export type IBetaSchemaFormProps = React.ComponentProps<typeof OriginalBetaSchemaForm> & {
   columns?: IExtendsColType
   intl?: string
   onValuesChange?: FormProps['onValuesChange']
@@ -36,7 +37,7 @@ const intlMap = {
   enUSIntl
 }
 
-class SearchTable extends Component<IProTableProps, any> {
+class SchemaForm extends Component<IBetaSchemaFormProps, any> {
   // pro-table 未对批量操作进行封装，自己封了
   state = {
     selectedRowKeys: (this.props.rowSelection as any)?.selectedRowKeys ?? [],
@@ -207,10 +208,10 @@ class SearchTable extends Component<IProTableProps, any> {
             return <a onClick={(e) => {
               e.preventDefault();
               if (button.buttonType === 'url') {
-                button.url && history.pushState({}, {},`${button.url}?id=${record.id}`)
+                button.url && history.pushState({}, {}, `${button.url}?id=${record.id}`)
               } else if (button.buttonType === "request") {
                 button.url && request(button.url, record)
-              } 
+              }
               return false
             }} rel="noopener noreferrer">
               {button.label || ''}
@@ -281,44 +282,12 @@ class SearchTable extends Component<IProTableProps, any> {
 
     return (
       <ConfigProvider locale={intlMap[intl || 'zhCNIntl']}>
-        <OriginalProTable
-          {...this.props}
-          search={
-            typeof this.props.search === 'boolean'
-              ? this.props.search
-              : {
-                ...this.props.search,
-                collapsed,
-                onCollapse: () => {
-                  if (this.props.search === false) return
-                  this.setState({
-                    collapsed: !collapsed
-                  })
-                  if (this.props.search.onCollapse) {
-                    // 如果设置了函数则继续执行
-                    this.props.search.onCollapse(!collapsed)
-                  }
-                }
-              }
-          }
-          rowSelection={
-            rowSelection
-              ? {
-                ...rowSelection,
-                defaultSelectedRowKeys: selectedRowKeys,
-                selectedRowKeys,
-                onChange: (...args) => {
-                  rowSelection?.onChange?.(...args)
-                  this.onSelectRowsChange(...args)
-                }
-              }
-              : false
-          }
-          // expandable={expandable}
+        <OriginalBetaSchemaForm
+          // {...this.props}
           columns={columns}
           actionRef={this.actionRef}
           formRef={this.formRef}
-          form={{ onValuesChange }}
+          // form={{ onValuesChange }}
           request={finalRequest}
         />
       </ConfigProvider>
@@ -327,5 +296,5 @@ class SearchTable extends Component<IProTableProps, any> {
 }
 
 export {
-  SearchTable
+  SchemaForm
 }
