@@ -43,6 +43,12 @@ const NotkidMeta: ComponentMetadata = {
             propType: { type: 'oneOfType', value: ['string', 'object'] },
             setter: ['StringSetter', 'CustomSetter',]
           },
+          {
+            name: 'dataPath',
+            title: { label: 'list路径', tip: 'dataSource | 表格数据' },
+            propType: 'string',
+            setter: 'StringSetter'
+          },
 
           {
             name: 'treeRenderField',
@@ -571,7 +577,7 @@ const NotkidMeta: ComponentMetadata = {
             propType: 'bool',
             setter: ['BoolSetter',]
           },
-                 
+
           {
             name: 'deleteUrl',
             title: { label: '删除url', tip: 'dataSource | 表格数据' },

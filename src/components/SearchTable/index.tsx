@@ -88,6 +88,11 @@ class SearchTable extends Component<IProTableProps, any> {
     let url = dataUrl
     if (dataUrl?.url) {
       url = dataUrl.url
+      if (url?.indexOf('{') > 0) {
+        url = url.replace(/{(\w+)}/, (match, $1) => {
+          return item[$1]
+        })
+      }
     }
     const msg = await window.request(url, {
       method,
@@ -98,6 +103,7 @@ class SearchTable extends Component<IProTableProps, any> {
         ...item
       },
     }, {})
+    this.actionRef?.current?.reload();
   }
 
   render() {
@@ -111,7 +117,8 @@ class SearchTable extends Component<IProTableProps, any> {
       showOption,
       deleteUrl,
       treeRenderField,
-      extraButtons = []
+      extraButtons = [],
+      dataPath = 'payload.content'
     } = this.props
 
     const { selectedRowKeys, collapsed } = this.state
@@ -155,7 +162,7 @@ class SearchTable extends Component<IProTableProps, any> {
             ...query,
           },
         }, {})
-        let data = msg.payload?.content
+        let data = msg?.[dataPath]
         if (treeRenderField) {
           data = data.map(item => {
             return {
@@ -207,10 +214,10 @@ class SearchTable extends Component<IProTableProps, any> {
             return <a onClick={(e) => {
               e.preventDefault();
               if (button.buttonType === 'url') {
-                button.url && history.pushState({}, {},`${button.url}?id=${record.id}`)
+                button.url && history.pushState({}, {}, `${button.url}?id=${record.id}`)
               } else if (button.buttonType === "request") {
                 button.url && request(button.url, record)
-              } 
+              }
               return false
             }} rel="noopener noreferrer">
               {button.label || ''}
@@ -242,7 +249,7 @@ class SearchTable extends Component<IProTableProps, any> {
                 content: '确定删除吗？',
                 okText: '确认',
                 cancelText: '取消',
-                onOk: () => this.deleteItem({ id: record.id }, deleteUrl),
+                onOk: () => this.deleteItem(record, deleteUrl),
               });
             }}
           >
