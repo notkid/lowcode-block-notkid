@@ -1,8 +1,10 @@
 import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable, TableDropdown } from '@ant-design/pro-components';
-import { Button, Dropdown, Space, Tag } from 'antd';
+import { Button, ConfigProvider, Dropdown, Modal, Space, Tag } from 'antd';
+import * as React from 'react';
 import { useRef } from 'react';
+import { request } from '../../request';
 
 type GithubIssueItem = {
   url: string;
@@ -31,7 +33,7 @@ type GithubIssueItem = {
 const EditTable = (props: any) => {
   const actionRef = useRef<ActionType>();
 
-  const { dataUrl, saveUrl, columns, searchForm = [], showAdd, addPath, viewPath, pushUrl, showEnable, extraButtons = [] } = props
+  const { dataUrl, saveUrl, columns, searchForm = [], showAdd, addPath, viewPath, pushUrl, showEnable, extraButtons = [], headerButtons = [] } = props
 
   const view = (record: GithubIssueItem) => {
     history.go(`${viewPath}?id=${record.id}`)
@@ -58,18 +60,43 @@ const EditTable = (props: any) => {
       key: 'option',
       width: "200px",
       render: (text, record, _, action) => extraButtons.filter(v => v).map((button: any) => {
+        const buttonText = button.buttonType === "enable" ? (record[button.enableField] ? '禁用' : '启用') : button.label
         return <a onClick={(e) => {
           e.preventDefault();
           if (button.buttonType === 'url') {
-            button.url && history.pushState({}, {},`${button.url}?id=${record.id}`)
+            button.url && history.pushState({}, {}, `${button.url}?id=${record.id}`)
           } else if (button.buttonType === "request") {
-            button.url && request(button.url, record)
+            if (button.needConfirm) {
+              Modal.confirm({
+                content: `确认${button.label}吗?`,
+                onOk: () => {
+                  button.url && request(button.url, record).then(res => {
+                    actionRef.current.reload()
+                  })
+                },
+              })
+            }
+
           } else if (button.buttonType === "editInline") {
             action?.startEditable?.(record.id);
+          } else if (button.buttonType === "enable") {
+            if (button.needConfirm) {
+              Modal.confirm({
+                content: `确认${button.label}吗?`,
+                onOk: () => {
+                  button.url && request(`${button.url}/${record.id}`,'POST', {
+                    userId: record.id,
+                    [button.enableField]: Number(!record[button.enableField])
+                  }).then(res => {
+                    actionRef.current.reload()
+                  })
+                },
+              })
+            }
           }
           return false
         }} rel="noopener noreferrer">
-          {button.label || ''}
+          {buttonText || ''}
         </a>
       })
       // [
@@ -96,73 +123,83 @@ const EditTable = (props: any) => {
   }
 
   return (
-    <ProTable<GithubIssueItem>
-      columns={newColumns}
-      actionRef={actionRef}
-      cardBordered
-      request={async (params = {}, sort, filter) => {
-        console.log(sort, filter);
-        if (dataUrl) {
-          return request<{
-            data: GithubIssueItem[];
-          }>(dataUrl, {
-            params,
-          });
-        }
+    <ConfigProvider>
+      <ProTable<GithubIssueItem>
+        columns={newColumns}
+        actionRef={actionRef}
+        cardBordered
+        request={async (params = {}, sort, filter) => {
+          console.log(sort, filter);
+          if (dataUrl) {
+            return request<{
+              data: GithubIssueItem[];
+            }>(dataUrl, 'GET', params).then(res => {
+              return {
+                data: res.payload.content,
+                // success 请返回 true，
+                // 不然 table 会停止解析数据，即使有数据
+                // success: msg.code === '0',
+                success: true,
+                // 不传会使用 data 的长度，如果是分页一定要传
+                total: res.payload.totalElement,
+              };
+            });
+          }
 
-      }}
-      // dataSource={dataSource}
-      editable={{
-        type: 'single',
-        onSave: (key: any, row: any) => {
-          console.log(row)
-          if (row.id) {
-            return request(saveUrl, row)
+        }}
+        // dataSource={dataSource}
+        editable={{
+          type: 'single',
+          onSave: (key: any, row: any) => {
+            console.log(row)
+            if (row.id) {
+              return request(saveUrl, row)
+            }
+            return Promise.reject()
           }
-          return Promise.reject()
-        }
-      }}
-      columnsState={{
-        persistenceKey: 'pro-table-singe-demos',
-        persistenceType: 'localStorage',
-        onChange(value) {
-          console.log('value: ', value);
-        },
-      }}
-      rowKey="id"
-      search={{
-        labelWidth: 'auto',
-      }}
-      options={{
-        setting: {
-          listsHeight: 400,
-        },
-      }}
-      form={{
-        // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
-        syncToUrl: (values, type) => {
-          if (type === 'get') {
-            return {
-              ...values,
-              created_at: [values.startTime, values.endTime],
-            };
-          }
-          return values;
-        },
-      }}
-      pagination={{
-        pageSize: 5,
-        onChange: (page) => console.log(page),
-      }}
-      dateFormatter="string"
-      headerTitle="高级表格"
-      options={false}
-      toolBarRender={() => showAdd ? [
-        <Button key="button" icon={<PlusOutlined />} type="primary" onClick={goToAdd}>
-          新建
-        </Button>
-      ] : []}
-    />
+        }}
+        columnsState={{
+          persistenceKey: 'pro-table-singe-demos',
+          persistenceType: 'localStorage',
+          onChange(value) {
+            console.log('value: ', value);
+          },
+        }}
+        rowKey="id"
+        search={{
+          labelWidth: 'auto',
+        }}
+        options={{
+          setting: {
+            listsHeight: 400,
+          },
+        }}
+        form={{
+          // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
+          syncToUrl: (values, type) => {
+            if (type === 'get') {
+              return {
+                ...values,
+                created_at: [values.startTime, values.endTime],
+              };
+            }
+            return values;
+          },
+        }}
+        pagination={{
+          pageSize: 5,
+          onChange: (page) => console.log(page),
+        }}
+        dateFormatter="string"
+        headerTitle="高级表格"
+        options={false}
+        toolBarRender={() => showAdd ? [
+          <Button key="button" icon={<PlusOutlined />} type="primary" onClick={goToAdd}>
+            新建
+          </Button>
+        ] : []}
+      />
+    </ConfigProvider>
   );
 };
 

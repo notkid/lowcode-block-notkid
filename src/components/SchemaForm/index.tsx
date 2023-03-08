@@ -7,12 +7,14 @@ import {
   ProColumnType
 } from '@ant-design/pro-components'
 import type { ProFormInstance } from '@ant-design/pro-components'
-import type { TablePaginationConfig } from 'antd'
+import { Button, DatePicker, Select, TablePaginationConfig } from 'antd'
 import { Tag, ConfigProvider, Modal } from 'antd'
 import zhCNIntl from 'antd/es/locale/zh_CN'
 import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from '../../shared/index'
 import { FormProps } from 'rc-field-form/lib/Form'
+import { request } from '../../request'
+import {RemoteSelect} from './components/RemoteSelect'
 
 interface IValueEnum {
   text: string
@@ -20,16 +22,21 @@ interface IValueEnum {
   status: string
 }
 
+export type FormLayout = 'horizontal' | 'inline' | 'vertical';
+export type FormLayoutType = 'ProForm' | 'ModalForm';
+
 type IExtendsColType = ProColumnType & {
   valueEnum?: IValueEnum[]
   renderTag?: boolean
 }
 
 export type IBetaSchemaFormProps = React.ComponentProps<typeof OriginalBetaSchemaForm> & {
+  layout: FormLayout
+  layoutType: any
   columns?: IExtendsColType
   intl?: string
   onValuesChange?: FormProps['onValuesChange']
-  dataUrl?: string
+  submitUrl?: string
 }
 
 const intlMap = {
@@ -101,6 +108,11 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
     }, {})
   }
 
+  onFinish = (values: any) => {
+    const { submitUrl } = this.props
+    return request(submitUrl, 'POST', values)
+  }
+
   render() {
     const {
       columns,
@@ -112,7 +124,9 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
       showOption,
       deleteUrl,
       treeRenderField,
-      extraButtons = []
+      extraButtons = [],
+      layout = 'inline',
+      layoutType = "ProForm"
     } = this.props
 
     const { selectedRowKeys, collapsed } = this.state
@@ -177,22 +191,20 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
         };
       }
     }
-
     // 劫持渲染标签类型的列
-    columns?.map((item) => {
-      if (isPlainObj(item.valueEnum) && (item as any).renderTag === true) {
-        item.render = (_, record) => {
-          const colValue = record[item.dataIndex as string]
-
-          const target = item.valueEnum[colValue]
-
-          return target?.text ? (
-            <Tag color={target?.status?.toLowerCase()}>{target?.text}</Tag>
-          ) : (
-            '-'
-          )
+    const newColumns = columns?.map((item: any) => {
+      if(item.valueType==='remote') {
+        return {
+          ...item,
+          // renderFormItem: () => <DatePicker.RangePicker />,
+          renderFormItem:(schema,config,form) => {
+            return (
+              <RemoteSelect url={item.url} />
+            )
+          }
         }
       }
+     return item
     })
 
     if (showOption) {
@@ -282,14 +294,31 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
 
     return (
       <ConfigProvider locale={intlMap[intl || 'zhCNIntl']}>
-        <OriginalBetaSchemaForm
-          // {...this.props}
-          columns={columns}
-          actionRef={this.actionRef}
-          formRef={this.formRef}
-          // form={{ onValuesChange }}
-          request={finalRequest}
-        />
+        <div
+          style={{
+            margin: 24,
+            width: 500
+          }}
+        >  <OriginalBetaSchemaForm
+            trigger={
+              <Button type="primary">
+                新建表单
+              </Button>
+            }
+            title="新建表单"
+            layout={layout}
+            layoutType={layoutType}
+            // {...this.props}
+            columns={newColumns}
+            actionRef={this.actionRef}
+            formRef={this.formRef}
+            // form={{ onValuesChange }}
+            request={finalRequest}
+            onFinish={this.onFinish}
+          />
+
+        </div>
+
       </ConfigProvider>
     )
   }
