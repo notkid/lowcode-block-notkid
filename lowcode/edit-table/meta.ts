@@ -62,6 +62,12 @@ const NotkidMeta: ComponentMetadata = {
             setter: ['StringSetter', 'CustomSetter',]
           },
           {
+            name: 'saveUrl',
+            title: { label: '行内编辑保存url', tip: 'dataSource | 表格数据' },
+            propType: { type: 'oneOfType', value: ['string', 'object'] },
+            setter: ['StringSetter', 'CustomSetter',]
+          },
+          {
             name: 'dataSource',
             title: { label: '表格数据', tip: 'dataSource | 表格数据' },
             propType: 'object',
@@ -138,6 +144,70 @@ const NotkidMeta: ComponentMetadata = {
         ]
       },
       {
+        name: 'headerButtons',
+        title: {
+          label: 'Toobar按钮配置'
+        },
+        setter: {
+          componentName: 'ArraySetter',
+          props: {
+            itemSetter: {
+              componentName: 'ObjectSetter',
+              props: {
+                config: {
+                  items: [
+                    {
+                      name: 'label',
+                      title: { label: '按钮名称', tip: 'dataIndex | 数据字段' },
+                      propType: 'string',
+                      setter: 'StringSetter',
+                      isRequired: true
+                    },
+                    {
+                      name: 'buttonType',
+                      title: { label: '按钮类型', tip: 'valueType | 数据类型' },
+                      propType: 'string',
+                      isRequired: true,
+                      setter: {
+                        componentName: 'SelectSetter',
+                        props: {
+                          options: [
+                            {
+                              title: '弹窗表单',
+                              value: 'modalFormButton'
+                            },
+                            {
+                              title: '打开新页面',
+                              value: 'url'
+                            },
+                            {
+                              title: '普通请求',
+                              value: 'request'
+                            },
+                            {
+                              title: '行内新增',
+                              value: 'addInline'
+                            },
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      name: 'url',
+                      title: { label: '请求地址' },
+                      propType: 'string',
+                      setter: 'StringSetter',
+                      isRequired: false
+                    },
+
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      {
         name: 'extraButtons',
         title: {
           label: '操作栏按钮配置'
@@ -178,6 +248,10 @@ const NotkidMeta: ComponentMetadata = {
                               title: '行内编辑',
                               value: 'editInline'
                             },
+                            {
+                              title: '启用禁用类型按钮',
+                              value: 'enable'
+                            },
                           ]
                         }
                       }
@@ -188,6 +262,23 @@ const NotkidMeta: ComponentMetadata = {
                       propType: 'string',
                       setter: 'StringSetter',
                       isRequired: false
+                    },
+                    {
+                      name: 'enableField',
+                      title: { label: '启用禁用字段名称' },
+                      propType: 'string',
+                      setter: 'StringSetter',
+                      isRequired: false
+                    },
+                    {
+                      name: 'needConfirm',
+                      title: { label: '是否需要弹窗确认', },
+                      propType: 'boolean',
+                      setter: {
+                        "componentName": "BoolSetter",
+                        "isRequired": false,
+                        "initialValue": false
+                      }
                     },
 
                   ]

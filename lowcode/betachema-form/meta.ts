@@ -7356,6 +7356,59 @@ const BetachemaFormMeta: ComponentMetadata = {
       //   }
       // },
       {
+        name: 'layoutType',
+        title: {
+          label: '表单类型'
+        },
+        setter: {
+          componentName: 'SelectSetter',
+          props: {
+            options: [
+              {
+                title: 'ProForm',
+                value: 'ProForm'
+              },
+              {
+                title: 'ModalForm',
+                value: 'ModalForm'
+              },
+            ]
+          }
+        }
+      },
+      {
+        name: 'layout',
+        title: {
+          label: '表单布局'
+        },
+        setter: {
+          componentName: 'SelectSetter',
+          props: {
+            options: [
+              {
+                title: '水平',
+                value: 'horizontal'
+              },
+              {
+                title: '垂直',
+                value: 'vertical'
+              },
+              {
+                title: '行内',
+                value: 'inline'
+              },
+            ]
+          }
+        }
+      },
+     
+      {
+        name: 'submitUrl',
+        title: { label: '提交url', tip: 'dataSource | 表格数据' },
+        setter: ['StringSetter', 'CustomSetter',]
+      },
+  
+      {
         name: 'columns',
         title: { label: '表格列', tip: '表格列的配置描述，具体项见下表' },
         setter: {
@@ -7402,6 +7455,10 @@ const BetachemaFormMeta: ComponentMetadata = {
                         componentName: 'SelectSetter',
                         props: {
                           options: [
+                            {
+                              title: '门店远程搜素',
+                              value: 'remote'
+                            },
                             {
                               title: '操作',
                               value: 'option'
@@ -7501,6 +7558,14 @@ const BetachemaFormMeta: ComponentMetadata = {
                           ]
                         }
                       }
+                    },
+                    {
+                      name: 'url',
+                      title: {
+                        label: '远程链接',
+                      },
+                      propType: 'string',
+                      setter: 'StringSetter'
                     },
                     {
                       name: 'fieldProps',
