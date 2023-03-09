@@ -82,7 +82,7 @@ const EditTable = (props: any) => {
           } else if (button.buttonType === "enable") {
             if (button.needConfirm) {
               Modal.confirm({
-                content: `确认${button.label}吗?`,
+                content: `确认${buttonText}吗?`,
                 onOk: () => {
                   button.url && request(`${button.url}/${record.id}`,'POST', {
                     userId: record.id,

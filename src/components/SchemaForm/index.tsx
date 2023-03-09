@@ -24,6 +24,7 @@ interface IValueEnum {
 
 export type FormLayout = 'horizontal' | 'inline' | 'vertical';
 export type FormLayoutType = 'ProForm' | 'ModalForm';
+export type FormLayoutMode = 'edit' | 'view';
 
 type IExtendsColType = ProColumnType & {
   valueEnum?: IValueEnum[]
@@ -33,9 +34,11 @@ type IExtendsColType = ProColumnType & {
 export type IBetaSchemaFormProps = React.ComponentProps<typeof OriginalBetaSchemaForm> & {
   layout: FormLayout
   layoutType: any
+  mode: FormLayoutMode,
   columns?: IExtendsColType
   intl?: string
   onValuesChange?: FormProps['onValuesChange']
+  detailUrl?: string
   submitUrl?: string
 }
 
@@ -49,6 +52,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
   state = {
     selectedRowKeys: (this.props.rowSelection as any)?.selectedRowKeys ?? [],
     selectedRows: [],
+    defaultValue: {},
     collapsed:
       this.props.search === false
         ? undefined
@@ -85,6 +89,12 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
   componentDidMount() {
     // 把操作方法挂载到 class instance 上，可通过 this.$ 调用
     defineGetterProperties(this, [this.actionRef, this.formRef])
+    const {mode, detailUrl} = this.props
+    if(mode === 'edit' || mode ==='view') {
+      detailUrl && request(detailUrl,).then((response) => {
+        this.setState({ defaultValue: response.payload})
+      })
+    }
   }
 
   async deleteItem(item, dataUrl) {
@@ -126,7 +136,9 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
       treeRenderField,
       extraButtons = [],
       layout = 'inline',
-      layoutType = "ProForm"
+      layoutType = "ProForm",
+      defaultValue,
+      mode
     } = this.props
 
     const { selectedRowKeys, collapsed } = this.state
@@ -307,10 +319,12 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
             }
             title="新建表单"
             layout={layout}
+            disabled={mode==='view'}
             layoutType={layoutType}
             // {...this.props}
             columns={newColumns}
             actionRef={this.actionRef}
+            defaultValue={defaultValue}
             formRef={this.formRef}
             // form={{ onValuesChange }}
             request={finalRequest}

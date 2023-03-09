@@ -207,20 +207,47 @@ class SearchTable extends Component<IProTableProps, any> {
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
-        render: (text, record) => [
+        render: (text, record,_,  action) => [
           // alert(extraButtons);
           ...extraButtons.filter(v => v).map((button: any) => {
             console.log(extraButtons)
+            const buttonText = button.buttonType === "enable" ? (record[button.enableField] ? '禁用' : '启用') : button.label
             return <a onClick={(e) => {
               e.preventDefault();
               if (button.buttonType === 'url') {
                 button.url && history.pushState({}, {}, `${button.url}?id=${record.id}`)
               } else if (button.buttonType === "request") {
-                button.url && request(button.url, record)
+                if (button.needConfirm) {
+                  Modal.confirm({
+                    content: `确认${button.label}吗?`,
+                    onOk: () => {
+                      button.url && request(button.url, record).then(res => {
+                        this.actionRef.current.reload()
+                      })
+                    },
+                  })
+                }
+    
+              } else if (button.buttonType === "editInline") {
+                action?.startEditable?.(record.id);
+              } else if (button.buttonType === "enable") {
+                if (button.needConfirm) {
+                  Modal.confirm({
+                    content: `确认${buttonText}吗?`,
+                    onOk: () => {
+                      button.url && request(`${button.url}/${record.id}`,'POST', {
+                        userId: record.id,
+                        [button.enableField]: Number(!record[button.enableField])
+                      }).then(res => {
+                        this.actionRef.current.reload()
+                      })
+                    },
+                  })
+                }
               }
               return false
             }} rel="noopener noreferrer">
-              {button.label || ''}
+              {buttonText || ''}
             </a>
           }),
           // <a

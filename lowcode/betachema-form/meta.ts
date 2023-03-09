@@ -7401,12 +7401,46 @@ const BetachemaFormMeta: ComponentMetadata = {
           }
         }
       },
-     
+      {
+        name: 'mode',
+        title: {
+          label: '模式'
+        },
+        setter: {
+          componentName: 'SelectSetter',
+          initialValue: {
+            type: 'String',
+            value: 'add'
+          },
+          props: {
+            options: [
+              {
+                title: '创建',
+                value: 'add'
+              },
+              {
+                title: '编辑',
+                value: 'edit'
+              },
+              {
+                title: '详情',
+                value: 'view'
+              },
+            ]
+          },
+        }
+      },
+      {
+        name: 'detailUrl',
+        title: { label: '详情url', tip: 'dataSource | 表格数据' },
+        setter: ['StringSetter', 'CustomSetter',]
+      },
       {
         name: 'submitUrl',
         title: { label: '提交url', tip: 'dataSource | 表格数据' },
         setter: ['StringSetter', 'CustomSetter',]
       },
+
   
       {
         name: 'columns',

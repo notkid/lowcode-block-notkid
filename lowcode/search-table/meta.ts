@@ -623,6 +623,14 @@ const NotkidMeta: ComponentMetadata = {
                               title: '普通请求',
                               value: 'request'
                             },
+                            {
+                              title: '行内编辑',
+                              value: 'editInline'
+                            },
+                            {
+                              title: '启用禁用类型按钮',
+                              value: 'enable'
+                            },
                           ]
                         }
                       }
@@ -633,6 +641,23 @@ const NotkidMeta: ComponentMetadata = {
                       propType: 'string',
                       setter: 'StringSetter',
                       isRequired: false
+                    },
+                    {
+                      name: 'enableField',
+                      title: { label: '启用禁用字段名称' },
+                      propType: 'string',
+                      setter: 'StringSetter',
+                      isRequired: false
+                    },
+                    {
+                      name: 'needConfirm',
+                      title: { label: '是否需要弹窗确认', },
+                      propType: 'boolean',
+                      setter: {
+                        "componentName": "BoolSetter",
+                        "isRequired": false,
+                        "initialValue": false
+                      }
                     },
 
                   ]
