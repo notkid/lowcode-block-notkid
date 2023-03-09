@@ -215,7 +215,8 @@ class SearchTable extends Component<IProTableProps, any> {
             return <a onClick={(e) => {
               e.preventDefault();
               if (button.buttonType === 'url') {
-                button.url && history.pushState({}, {}, `${button.url}?id=${record.id}`)
+                button.url && window._utils.History.push(`${button.url}?id=${record.id}`)
+                // button.url && history.pushState({}, {}, `${button.url}?id=${record.id}`)
               } else if (button.buttonType === "request") {
                 if (button.needConfirm) {
                   Modal.confirm({

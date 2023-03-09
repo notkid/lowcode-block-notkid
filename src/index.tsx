@@ -5,5 +5,7 @@ export { EditTable } from './components/EditTable'
 export { SchemaForm as BBSchemaForm } from './components/SchemaForm'
 export { SchemaForm as BetachemaForm } from './components/SchemaForm'
 export {ModalButton} from './components/ModalButton'
+
+export {ImportDialogButton} from './components/ImportDialogButton'
 // export { SchemaForm as BaseSchemaForm } from './components/SchemaForm'
 // export type { IBetaSchemaFormProps } from './components/SchemaForm'
