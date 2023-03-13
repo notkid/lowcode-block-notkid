@@ -30,7 +30,7 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
 
     const handleDownload = () => {
         request(downloadExcelUrl, {
-            method: 'POST',
+            method: 'GET',
             getResponse: true,
             data: { "tenantId": "default_tenant", "appId": 1196271598647115800, "userId": "2477", "merchantId": 82, "merchantName": "18770084902商户", "id": 195, "remark": null, "createdTime": 1656986330000, "updatedTime": 1656986330000, "createdBy": 2477, "updatedBy": 2477, "createdByName": "18770084902法人姓名", "updatedByName": "18770084902法人姓名", "bookName": "mtest", "type": 7, "bookId": 195, "responseType": "arraybuffer" }
         }).then(res => res.blob()).then(file => {
@@ -72,7 +72,6 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
 
     const handleImportExcel = () => {
         window?._utils?.importExcel([], (res: any) => {
-            debugger
         });
       }
 
