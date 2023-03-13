@@ -237,6 +237,9 @@ class SearchTable extends Component<IProTableProps, any> {
                 }
               })
             }
+            // if(v.hasPermission) {
+
+            // }
             return true
           }).map((button: any) => {
             console.log(extraButtons)

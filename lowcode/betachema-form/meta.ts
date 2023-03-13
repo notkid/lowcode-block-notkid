@@ -7441,7 +7441,7 @@ const BetachemaFormMeta: ComponentMetadata = {
         setter: ['StringSetter', 'CustomSetter',]
       },
 
-  
+
       {
         name: 'columns',
         title: { label: '表格列', tip: '表格列的配置描述，具体项见下表' },
@@ -7478,7 +7478,17 @@ const BetachemaFormMeta: ComponentMetadata = {
                       name: 'dataIndex',
                       title: { label: '数据字段', tip: 'dataIndex | 数据字段' },
                       propType: 'string',
-                      setter: 'StringSetter',
+                      setter: ['StringSetter',
+                        {
+                          "componentName": "ArraySetter",
+                          "props": {
+                            "itemSetter": {
+                              "componentName": "StringSetter",
+                              "isRequired": false,
+                              "initialValue": {}
+                            }
+                          }
+                        }],
                       isRequired: true
                     },
                     {
