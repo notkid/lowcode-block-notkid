@@ -289,8 +289,14 @@ class SearchTable extends Component<IProTableProps, any> {
                 <a onClick={(e) => {
                   e.preventDefault();
                   if (button.buttonType === 'url') {
-                    button.url && window._utils.History.push(`${button.url}?id=${record.id}`)
-                    // button.url && history.pushState({}, {}, `${button.url}?id=${record.id}`)
+                    let { url } = button
+                    if (url?.indexOf('{') > 0) {
+                      url = url.replace(/{(\w+)}/, (match, $1) => {
+                        return record[$1]
+                      })
+                    }
+                    console.log(this, 'asdfasdfasdfasthis')
+                    url && window._utils?.History?.push(url)
                   } else if (button.buttonType === "request") {
                     if (button.needConfirm) {
                       Modal.confirm({
