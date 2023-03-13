@@ -122,7 +122,10 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
 
   onFinish = (values: any) => {
     const { submitUrl } = this.props
-    return window.request(submitUrl, 'POST', values)
+    return window.request(submitUrl,{
+      methods: 'POST',
+      data: values
+    })
   }
 
   render() {
