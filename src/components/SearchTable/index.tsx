@@ -13,6 +13,7 @@ import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from '../../shared/index'
 import { FormProps } from 'rc-field-form/lib/Form'
 import { ImportDialogButton } from '../ImportDialogButton'
+import { Permission } from '../Permission/index'
 
 interface IValueEnum {
   text: string
@@ -111,13 +112,13 @@ class SearchTable extends Component<IProTableProps, any> {
     const history = window._utils.History
     const Map = {}
     let path = '/kingdee/data-mapping-tax'
-    if(record.type === 1) {
-      path ='/kingdee/data-mapping-sku'
+    if (record.type === 1) {
+      path = '/kingdee/data-mapping-sku'
     } else {
-      path='/kingdee/data-mapping-tax'
+      path = '/kingdee/data-mapping-tax'
     }
-    history.push(path,{
-      query: {id: record.id}
+    history.push(path, {
+      query: { id: record.id }
     })
   }
 
@@ -222,18 +223,18 @@ class SearchTable extends Component<IProTableProps, any> {
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
-        render: (text, record,_,  action) => [
+        render: (text, record, _, action) => [
           // alert(extraButtons);
           ...extraButtons.filter(v => {
-            if(!v){
+            if (!v) {
               return false
             }
-            if(v.isConditionDisplay) {
-              return v.conditionExpressionList.every((exp: any)=>{
-                if(exp.conditionExpressionType === 'equals') {
-                  return  record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
-                } else if(exp.conditionExpressionType === 'notEquals') {
-                  return  !record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
+            if (v.isConditionDisplay) {
+              return v.conditionExpressionList.every((exp: any) => {
+                if (exp.conditionExpressionType === 'equals') {
+                  return record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
+                } else if (exp.conditionExpressionType === 'notEquals') {
+                  return !record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
                 }
               })
             }
@@ -243,54 +244,60 @@ class SearchTable extends Component<IProTableProps, any> {
             return true
           }).map((button: any) => {
             console.log(extraButtons)
-            if(button.buttonType==='export') {
-              return <ImportDialogButton {...button} />
+            if (button.buttonType === 'export') {
+              return  <Permission code={button.code} hasPermission={window?._utils?.hasPermission}><ImportDialogButton {...button} /></Permission>
             }
             // if(button.buttonType==='condition') {
             //   button.displayConditionField
             // }
 
             const buttonText = button.buttonType === "enable" ? (record[button.enableField] ? '禁用' : '启用') : button.label
-            return <a onClick={(e) => {
-              e.preventDefault();
-              if (button.buttonType === 'url') {
-                button.url && window._utils.History.push(`${button.url}?id=${record.id}`)
-                // button.url && history.pushState({}, {}, `${button.url}?id=${record.id}`)
-              } else if (button.buttonType === "request") {
-                if (button.needConfirm) {
-                  Modal.confirm({
-                    content: `确认${button.label}吗?`,
-                    onOk: () => {
-                      button.url && request(button.url, record).then(res => {
-                        this.actionRef.current.reload()
+            return (
+              <Permission code={button.code} hasPermission={window?._utils?.hasPermission}>
+                <a onClick={(e) => {
+                  e.preventDefault();
+                  if (button.buttonType === 'url') {
+                    button.url && window._utils.History.push(`${button.url}?id=${record.id}`)
+                    // button.url && history.pushState({}, {}, `${button.url}?id=${record.id}`)
+                  } else if (button.buttonType === "request") {
+                    if (button.needConfirm) {
+                      Modal.confirm({
+                        content: `确认${button.label}吗?`,
+                        onOk: () => {
+                          button.url && request(button.url, record).then(res => {
+                            this.actionRef.current.reload()
+                          })
+                        },
                       })
-                    },
-                  })
-                }
-    
-              } else if (button.buttonType === "editInline") {
-                action?.startEditable?.(record.id);
-              } else if (button.buttonType === "enable") {
-                if (button.needConfirm) {
-                  Modal.confirm({
-                    content: `确认${buttonText}吗?`,
-                    onOk: () => {
-                      button.url && request(`${button.url}/${record.id}`,'POST', {
-                        userId: record.id,
-                        [button.enableField]: Number(!record[button.enableField])
-                      }).then(res => {
-                        this.actionRef.current.reload()
+                    }
+
+                  } else if (button.buttonType === "editInline") {
+                    action?.startEditable?.(record.id);
+                  } else if (button.buttonType === "enable") {
+                    if (button.needConfirm) {
+                      Modal.confirm({
+                        content: `确认${buttonText}吗?`,
+                        onOk: () => {
+                          button.url && request(`${button.url}/${record.id}`, 'POST', {
+                            userId: record.id,
+                            [button.enableField]: Number(!record[button.enableField])
+                          }).then(res => {
+                            this.actionRef.current.reload()
+                          })
+                        },
                       })
-                    },
-                  })
-                }
-              } else if (button.buttonType === "conditionUrl") {
-                this.jump(record)
-              }
-              return false
-            }} rel="noopener noreferrer">
-              {buttonText || ''}
-            </a>
+                    }
+                  } else if (button.buttonType === "conditionUrl") {
+                    this.jump(record)
+                  }
+                  return false
+                }} rel="noopener noreferrer">
+                  {buttonText || ''}
+                </a>
+              </Permission>
+            )
+
+
           }),
           // <a
           //   key="detailApp"
