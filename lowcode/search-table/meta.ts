@@ -32,6 +32,7 @@ const NotkidMeta: ComponentMetadata = {
         },
         setter: 'StringSetter'
       },
+
       {
         title: '数据源',
         display: 'block',
@@ -274,6 +275,10 @@ const NotkidMeta: ComponentMetadata = {
                             {
                               title: '级联选择器',
                               value: 'cascader'
+                            },
+                            {
+                              title: '可点击弹窗表格',
+                              value: 'clickableModalTable'
                             }
                           ]
                         }
@@ -752,6 +757,28 @@ const NotkidMeta: ComponentMetadata = {
             }
           }
         }
+      },
+      {
+        title: '点击单元格',
+        display: 'block',
+        type: 'group',
+        items: [
+          {
+            title: '点击',
+            propType: 'func',
+            name: 'handleClickCell',
+            setter: [
+              {
+                componentName: 'FunctionSetter',
+                props: {
+                  template:
+                    'getCheckboxProps(record,${extParams}){\n// 选择框的默认属性配置\nreturn { disabled: false };\n}'
+                }
+              },
+              'VariableSetter'
+            ],
+          }
+        ]
       },
       {
         title: '外观',
