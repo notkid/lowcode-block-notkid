@@ -229,11 +229,11 @@ class SearchTable extends Component<IProTableProps, any> {
             if (!v) {
               return false
             }
-            if (v.isConditionDisplay) {
+            if (v.isConditionDisplay && v.conditionExpressionList?.length) {
               return v.conditionExpressionList.every((exp: any) => {
-                if (exp.conditionExpressionType === 'equals') {
+                if (exp?.conditionExpressionType === 'equals') {
                   return record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
-                } else if (exp.conditionExpressionType === 'notEquals') {
+                } else if (exp?.conditionExpressionType === 'notEquals') {
                   return !record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
                 }
               })

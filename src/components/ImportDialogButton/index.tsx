@@ -3,6 +3,8 @@ import Dragger from 'antd/es/upload/Dragger';
 import React, { Children, ReactNode, useRef, useState } from 'react';
 import { request as innerRequest } from '../../request'
 
+
+
 let request = window.request || innerRequest;
 
 
@@ -68,6 +70,12 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
         },
     };
 
+    const handleImportExcel = () => {
+        window?._utils?.importExcel([], (res: any) => {
+            debugger
+        });
+      }
+
     return (
         <>
 
@@ -83,17 +91,17 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
                 <p>第一步：下载银行账号导入初始化模板</p>
                 <div>模板.xls<Button type="text" onClick={handleDownload}>下载</Button></div>
                 <p>第二步：导入填写完成的Excel文件</p>
-                <div>
-                    <Dragger {...uploadProps}>
-                        <p className="ant-upload-drag-icon">
-                            {/* <Inbox /> */}
-                        </p>
-                        <p className="ant-upload-text">上传 excel 银行账号导入初始化表</p>
-                        <p className="ant-upload-hint">
-                            上传 excel 银行账号导入初始化表点击上传
-                        </p>
-                    </Dragger>
+                <div onClick={handleImportExcel}>
+                    <p className="ant-upload-drag-icon">
+                        {/* <Inbox /> */}
+                    </p>
+                    <p className="ant-upload-text">上传 excel 银行账号导入初始化表</p>
+                    <p className="ant-upload-hint">
+                        上传 excel 银行账号导入初始化表点击上传
+                    </p>
                 </div>
+
+                    
 
             </Modal>
         </>
