@@ -45,7 +45,8 @@ class SearchTable extends Component<IProTableProps, any> {
     collapsed:
       this.props.search === false
         ? undefined
-        : this.props.search?.defaultCollapsed // 之前设置的this.props.search.collapsed会失效，但问题不大
+        : this.props.search?.defaultCollapsed, // 之前设置的this.props.search.collapsed会失效，但问题不大
+    modalVisible: false
   }
 
   actionRef = createRef<ActionType>()
@@ -111,13 +112,13 @@ class SearchTable extends Component<IProTableProps, any> {
     const history = window._utils.History
     const Map = {}
     let path = '/kingdee/data-mapping-tax'
-    if(record.type === 1) {
-      path ='/kingdee/data-mapping-sku'
+    if (record.type === 1) {
+      path = '/kingdee/data-mapping-sku'
     } else {
-      path='/kingdee/data-mapping-tax'
+      path = '/kingdee/data-mapping-tax'
     }
-    history.push(path,{
-      query: {id: record.id}
+    history.push(path, {
+      query: { id: record.id }
     })
   }
 
@@ -133,10 +134,12 @@ class SearchTable extends Component<IProTableProps, any> {
       deleteUrl,
       treeRenderField,
       extraButtons = [],
-      dataPath = 'payload.content'
+      dataPath = 'payload.content',
+      modalSlot,
+      handleClickCell
     } = this.props
 
-    const { selectedRowKeys, collapsed } = this.state
+    const { selectedRowKeys, collapsed, modalVisible } = this.state
 
     let finalRequest = request
 
@@ -201,6 +204,7 @@ class SearchTable extends Component<IProTableProps, any> {
 
     // 劫持渲染标签类型的列
     columns?.map((item) => {
+      console.log(item, 'itemitem')
       if (isPlainObj(item.valueEnum) && (item as any).renderTag === true) {
         item.render = (_, record) => {
           const colValue = record[item.dataIndex as string]
@@ -213,6 +217,34 @@ class SearchTable extends Component<IProTableProps, any> {
             '-'
           )
         }
+      } else if (item.valueType === 'clickableModalTable') {
+        if (isPlainObj(item.valueEnum)) {
+          item.render = (_, record) => {
+            const colValue = record[item.dataIndex as string]
+
+            const target = item.valueEnum[colValue]
+            return target?.text ? <a
+              onClick={(e) => {
+                e.preventDefault();
+                this.setState(() => ({
+                  modalVisible: true
+                }))
+              }}
+              rel="noopener noreferrer">{target?.text}</a> : ''
+          }
+        } else {
+          item.render = (_, record) => {
+            const colValue = record[item.dataIndex as string]
+
+            return colValue ? <a
+              onClick={(e) => {
+                e.preventDefault();
+                handleClickCell()
+              }}
+              rel="noopener noreferrer">{colValue}</a> : ''
+          }
+        }
+
       }
     })
     if (showOption) {
@@ -222,25 +254,25 @@ class SearchTable extends Component<IProTableProps, any> {
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
-        render: (text, record,_,  action) => [
+        render: (text, record, _, action) => [
           // alert(extraButtons);
           ...extraButtons.filter(v => {
-            if(!v){
+            if (!v) {
               return false
             }
-            if(v.isConditionDisplay) {
-              return v.conditionExpressionList.every((exp: any)=>{
-                if(exp.conditionExpressionType === 'equals') {
-                  return  record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
-                } else if(exp.conditionExpressionType === 'notEquals') {
-                  return  !record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
+            if (v.isConditionDisplay) {
+              return v.conditionExpressionList.every((exp: any) => {
+                if (exp.conditionExpressionType === 'equals') {
+                  return record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
+                } else if (exp.conditionExpressionType === 'notEquals') {
+                  return !record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
                 }
               })
             }
             return true
           }).map((button: any) => {
             console.log(extraButtons)
-            if(button.buttonType==='export') {
+            if (button.buttonType === 'export') {
               return <ImportDialogButton {...button} />
             }
             // if(button.buttonType==='condition') {
@@ -251,8 +283,14 @@ class SearchTable extends Component<IProTableProps, any> {
             return <a onClick={(e) => {
               e.preventDefault();
               if (button.buttonType === 'url') {
-                button.url && window._utils.History.push(`${button.url}?id=${record.id}`)
-                // button.url && history.pushState({}, {}, `${button.url}?id=${record.id}`)
+                let { url } = button
+                if (url?.indexOf('{') > 0) {
+                  url = url.replace(/{(\w+)}/, (match, $1) => {
+                    return record[$1]
+                  })
+                }
+                console.log(this, 'asdfasdfasdfasthis')
+                url && window._utils?.History?.push(url)
               } else if (button.buttonType === "request") {
                 if (button.needConfirm) {
                   Modal.confirm({
@@ -264,7 +302,7 @@ class SearchTable extends Component<IProTableProps, any> {
                     },
                   })
                 }
-    
+
               } else if (button.buttonType === "editInline") {
                 action?.startEditable?.(record.id);
               } else if (button.buttonType === "enable") {
@@ -272,7 +310,7 @@ class SearchTable extends Component<IProTableProps, any> {
                   Modal.confirm({
                     content: `确认${buttonText}吗?`,
                     onOk: () => {
-                      button.url && request(`${button.url}/${record.id}`,'POST', {
+                      button.url && request(`${button.url}/${record.id}`, 'POST', {
                         userId: record.id,
                         [button.enableField]: Number(!record[button.enableField])
                       }).then(res => {
@@ -351,7 +389,6 @@ class SearchTable extends Component<IProTableProps, any> {
     //     },
     //   }
     // }
-
     return (
       <ConfigProvider locale={intlMap[intl || 'zhCNIntl']}>
         <OriginalProTable
@@ -394,6 +431,21 @@ class SearchTable extends Component<IProTableProps, any> {
           form={{ onValuesChange }}
           request={finalRequest}
         />
+        <Modal
+          {...this.props}
+          // title={modalTitle}
+          visible={modalVisible}
+          onCancel={() => {
+            this.setState(() => ({
+              modalVisible: false
+            }))
+          }}
+          okText="确认"
+          cancelText="取消"
+
+        >
+          {modalSlot}
+        </Modal>
       </ConfigProvider>
     )
   }
