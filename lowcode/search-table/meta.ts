@@ -5,7 +5,7 @@ import { uuid } from '../../src/shared/index'
 
 const NotkidMeta: ComponentMetadata = {
   componentName: 'SearchTable',
-  title: '高级表格',
+  title: '高级表格1',
   docUrl: '',
   screenshot: '',
   devMode: 'proCode',
@@ -631,13 +631,94 @@ const NotkidMeta: ComponentMetadata = {
                               title: '启用禁用类型按钮',
                               value: 'enable'
                             },
+                            {
+                              title: '导入按钮',
+                              value: 'export'
+                            },
+                            {
+                              title: '条件跳转',
+                              value: 'conditionUrl'
+                            },
                           ]
+                        }
+                      }
+                    },
+                    {
+                      name: 'isConditionDisplay',
+                      title: { label: '条件展示' },
+                      propType: 'bool',
+                      setter: ['BoolSetter',]
+                    },
+                    {
+                      name: 'conditionExpressionList',
+                      title: { label: '满足下面条件才显示'},
+                      setter: {
+                        componentName: 'ArraySetter',
+                        props: {
+                          itemSetter: {
+                            componentName: 'ObjectSetter',
+                            props: {
+                              config: {
+                                items: [
+                                  {
+                                    name: 'conditionExpressionType',
+                                    title: { label: '条件' },
+                                    propType: 'string',
+                                    isRequired: true,
+                                    setter: {
+                                      componentName: 'SelectSetter',
+                                      props: {
+                                        options: [
+                                          {
+                                            title: '相等',
+                                            value: 'equals'
+                                          },
+                                          {
+                                            title: '不相等',
+                                            value: 'notEquals'
+                                          },
+                                        ]
+                                      }
+                                    }
+                                  },
+                                  {
+                                    name: 'conditionExpressionFieldValue',
+                                    title: { label: '字段名' },
+                                    propType: 'string',
+                                    isRequired: true,
+                                    setter: ['StringSetter']
+                                  },
+                                  {
+                                    name: 'conditionExpressionValue',
+                                    title: { label: '值' },
+                                    propType: 'string',
+                                    isRequired: true,
+                                    setter: ['StringSetter']
+                                  }
+                                ]
+                              }
+                            }
+                          }
                         }
                       }
                     },
                     {
                       name: 'url',
                       title: { label: '请求地址' },
+                      propType: 'string',
+                      setter: 'StringSetter',
+                      isRequired: false
+                    },
+                    {
+                      name: 'downloadExcelUrl',
+                      title: { label: 'download请求地址' },
+                      propType: 'string',
+                      setter: 'StringSetter',
+                      isRequired: false
+                    },
+                    {
+                      name: 'importExcelUrl',
+                      title: { label: 'import请求地址' },
                       propType: 'string',
                       setter: 'StringSetter',
                       isRequired: false
@@ -659,7 +740,6 @@ const NotkidMeta: ComponentMetadata = {
                         "initialValue": false
                       }
                     },
-
                   ]
                 }
               }

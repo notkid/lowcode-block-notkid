@@ -12,6 +12,7 @@ import zhCNIntl from 'antd/es/locale/zh_CN'
 import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from '../../shared/index'
 import { FormProps } from 'rc-field-form/lib/Form'
+import { ImportDialogButton } from '../ImportDialogButton'
 
 interface IValueEnum {
   text: string
@@ -104,6 +105,20 @@ class SearchTable extends Component<IProTableProps, any> {
       },
     }, {})
     this.actionRef?.current?.reload();
+  }
+
+  jump = (record: any) => {
+    const history = window._utils.History
+    const Map = {}
+    let path = '/kingdee/data-mapping-tax'
+    if(record.type === 1) {
+      path ='/kingdee/data-mapping-sku'
+    } else {
+      path='/kingdee/data-mapping-tax'
+    }
+    history.push(path,{
+      query: {id: record.id}
+    })
   }
 
   render() {
@@ -200,17 +215,38 @@ class SearchTable extends Component<IProTableProps, any> {
         }
       }
     })
-
     if (showOption) {
       console.log(showOption)
+
       const options = {
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
         render: (text, record,_,  action) => [
           // alert(extraButtons);
-          ...extraButtons.filter(v => v).map((button: any) => {
+          ...extraButtons.filter(v => {
+            if(!v){
+              return false
+            }
+            if(v.isConditionDisplay) {
+              return v.conditionExpressionList.every((exp: any)=>{
+                if(exp.conditionExpressionType === 'equals') {
+                  return  record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
+                } else if(exp.conditionExpressionType === 'notEquals') {
+                  return  !record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
+                }
+              })
+            }
+            return true
+          }).map((button: any) => {
             console.log(extraButtons)
+            if(button.buttonType==='export') {
+              return <ImportDialogButton {...button} />
+            }
+            // if(button.buttonType==='condition') {
+            //   button.displayConditionField
+            // }
+
             const buttonText = button.buttonType === "enable" ? (record[button.enableField] ? '禁用' : '启用') : button.label
             return <a onClick={(e) => {
               e.preventDefault();
@@ -245,6 +281,8 @@ class SearchTable extends Component<IProTableProps, any> {
                     },
                   })
                 }
+              } else if (button.buttonType === "conditionUrl") {
+                this.jump(record)
               }
               return false
             }} rel="noopener noreferrer">

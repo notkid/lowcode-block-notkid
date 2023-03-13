@@ -10,11 +10,13 @@ import type { ProFormInstance } from '@ant-design/pro-components'
 import { Button, DatePicker, Select, TablePaginationConfig } from 'antd'
 import { Tag, ConfigProvider, Modal } from 'antd'
 import zhCNIntl from 'antd/es/locale/zh_CN'
+import { request as innerRequest } from '../../request'
 import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from '../../shared/index'
 import { FormProps } from 'rc-field-form/lib/Form'
-import { request } from '../../request'
 import {RemoteSelect} from './components/RemoteSelect'
+
+let request = window.request || innerRequest
 
 interface IValueEnum {
   text: string
@@ -120,7 +122,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
 
   onFinish = (values: any) => {
     const { submitUrl } = this.props
-    return request(submitUrl, 'POST', values)
+    return window.request(submitUrl, 'POST', values)
   }
 
   render() {

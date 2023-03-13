@@ -1,10 +1,12 @@
 export const request = (
     dataAPI: string,
-    method = 'GET',
-    data?: object | string,
-    headers?: object,
-    otherProps?: any,
+    obj: any
 ): Promise<any> => {
+    // method = 'GET',
+    // data?: object | string,
+    // headers?: object,
+    // otherProps?: any,
+    let {method="GET", data={}, headers=[], otherProps} = obj
     return new Promise((resolve, reject): void => {
         if (otherProps && otherProps.timeout) {
             setTimeout((): void => {
@@ -30,6 +32,7 @@ export const request = (
             ...otherProps,
         })
             .then((response: Response): any => {
+                return response
                 switch (response.status) {
                     case 200:
                     case 201:
