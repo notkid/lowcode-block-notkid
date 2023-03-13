@@ -13,6 +13,7 @@ import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from '../../shared/index'
 import { FormProps } from 'rc-field-form/lib/Form'
 import { ImportDialogButton } from '../ImportDialogButton'
+import { Permission } from '../Permission/index'
 
 interface IValueEnum {
   text: string
@@ -260,72 +261,75 @@ class SearchTable extends Component<IProTableProps, any> {
             if (!v) {
               return false
             }
-            if (v.isConditionDisplay) {
+            if (v.isConditionDisplay && v.conditionExpressionList?.length) {
               return v.conditionExpressionList.every((exp: any) => {
-                if (exp.conditionExpressionType === 'equals') {
+                if (exp?.conditionExpressionType === 'equals') {
                   return record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
-                } else if (exp.conditionExpressionType === 'notEquals') {
+                } else if (exp?.conditionExpressionType === 'notEquals') {
                   return !record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
                 }
               })
             }
+            // if(v.hasPermission) {
+
+            // }
             return true
           }).map((button: any) => {
             console.log(extraButtons)
             if (button.buttonType === 'export') {
-              return <ImportDialogButton {...button} />
+              return <Permission code={button.code} hasPermission={window?._utils?.hasPermission}><ImportDialogButton {...button} /></Permission>
             }
             // if(button.buttonType==='condition') {
             //   button.displayConditionField
             // }
 
             const buttonText = button.buttonType === "enable" ? (record[button.enableField] ? '禁用' : '启用') : button.label
-            return <a onClick={(e) => {
-              e.preventDefault();
-              if (button.buttonType === 'url') {
-                let { url } = button
-                if (url?.indexOf('{') > 0) {
-                  url = url.replace(/{(\w+)}/, (match, $1) => {
-                    return record[$1]
-                  })
-                }
-                console.log(this, 'asdfasdfasdfasthis')
-                url && window._utils?.History?.push(url)
-              } else if (button.buttonType === "request") {
-                if (button.needConfirm) {
-                  Modal.confirm({
-                    content: `确认${button.label}吗?`,
-                    onOk: () => {
-                      button.url && request(button.url, record).then(res => {
-                        this.actionRef.current.reload()
+            return (
+              <Permission code={button.code} hasPermission={window?._utils?.hasPermission}>
+                <a onClick={(e) => {
+                  e.preventDefault();
+                  if (button.buttonType === 'url') {
+                    button.url && window._utils.History.push(`${button.url}?id=${record.id}`)
+                    // button.url && history.pushState({}, {}, `${button.url}?id=${record.id}`)
+                  } else if (button.buttonType === "request") {
+                    if (button.needConfirm) {
+                      Modal.confirm({
+                        content: `确认${button.label}吗?`,
+                        onOk: () => {
+                          button.url && request(button.url, record).then(res => {
+                            this.actionRef.current.reload()
+                          })
+                        },
                       })
-                    },
-                  })
-                }
+                    }
 
-              } else if (button.buttonType === "editInline") {
-                action?.startEditable?.(record.id);
-              } else if (button.buttonType === "enable") {
-                if (button.needConfirm) {
-                  Modal.confirm({
-                    content: `确认${buttonText}吗?`,
-                    onOk: () => {
-                      button.url && request(`${button.url}/${record.id}`, 'POST', {
-                        userId: record.id,
-                        [button.enableField]: Number(!record[button.enableField])
-                      }).then(res => {
-                        this.actionRef.current.reload()
+                  } else if (button.buttonType === "editInline") {
+                    action?.startEditable?.(record.id);
+                  } else if (button.buttonType === "enable") {
+                    if (button.needConfirm) {
+                      Modal.confirm({
+                        content: `确认${buttonText}吗?`,
+                        onOk: () => {
+                          button.url && request(`${button.url}/${record.id}`, 'POST', {
+                            userId: record.id,
+                            [button.enableField]: Number(!record[button.enableField])
+                          }).then(res => {
+                            this.actionRef.current.reload()
+                          })
+                        },
                       })
-                    },
-                  })
-                }
-              } else if (button.buttonType === "conditionUrl") {
-                this.jump(record)
-              }
-              return false
-            }} rel="noopener noreferrer">
-              {buttonText || ''}
-            </a>
+                    }
+                  } else if (button.buttonType === "conditionUrl") {
+                    this.jump(record)
+                  }
+                  return false
+                }} rel="noopener noreferrer">
+                  {buttonText || ''}
+                </a>
+              </Permission>
+            )
+
+
           }),
           // <a
           //   key="detailApp"

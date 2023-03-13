@@ -708,6 +708,12 @@ const NotkidMeta: ComponentMetadata = {
                       }
                     },
                     {
+                      name: 'code',
+                      title: { label: '权限点' },
+                      propType: 'string',
+                      setter: ['StringSetter',]
+                    },
+                    {
                       name: 'url',
                       title: { label: '请求地址' },
                       propType: 'string',
