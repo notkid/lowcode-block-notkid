@@ -149,6 +149,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
   handleEdit = () => {
     const history = window?._utils?.History
     const {editUrl} = this.props
+    console.log(history, editUrl)
     if(editUrl && history?.push) {
       history.push(editUrl)
     }

@@ -226,7 +226,7 @@ class SearchTable extends Component<IProTableProps, any> {
                 e.preventDefault();
                 handleClickCell(record)
               }}
-              rel="noopener noreferrer">{target?.text}</a> : <div>{colValue}</div>
+              rel="noopener noreferrer">{target?.text}</a> : <div>{target?.text}</div>
           }
         } else {
           item.render = (_, record) => {
