@@ -345,6 +345,10 @@ class SearchTable extends Component<IProTableProps, any> {
                           })
                         },
                       })
+                    } else {
+                      button.url && window.request(url, record).then(res => {
+                        this.actionRef.current.reload()
+                      })
                     }
 
                   } else if (button.buttonType === "editInline") {
