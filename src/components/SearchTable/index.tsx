@@ -221,7 +221,7 @@ class SearchTable extends Component<IProTableProps, any> {
           item.render = (_, record) => {
             const colValue = record[item.dataIndex as string]
             const target = item.valueEnum[colValue]
-            return target?.text && item?.clickableArray?.includes(colValue) ? <a
+            return target?.text && item?.clickableArray?.includes(colValue.toString()) ? <a
               onClick={(e) => {
                 e.preventDefault();
                 handleClickCell(record)
@@ -284,11 +284,10 @@ class SearchTable extends Component<IProTableProps, any> {
                 propList.forEach(v => {
                   value = value[v] 
                 })
-                debugger
                 if (exp?.conditionExpressionType === 'equals') {
-                  return value === exp.conditionExpressionValue
+                  return value.toString() == exp.conditionExpressionValue
                 } else if (exp?.conditionExpressionType === 'notEquals') {
-                  return !value === exp.conditionExpressionValue
+                  return !value.toString() == exp.conditionExpressionValue
                 }
               })
             }
