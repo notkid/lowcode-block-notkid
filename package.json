@@ -16,7 +16,7 @@
     "start": "build-scripts start",
     "build": "build-scripts build",
     "lowcode:dev": "build-scripts start --config ./build.lowcode.js",
-    "lowcode:build": "build-scripts build --config ./build.lowcode.js && node ./oss.js",
+    "lowcode:build": "build-scripts build --config ./build.lowcode.js",
     "test": "build-scripts test",
     "prepublishOnly": "npm run build && npm run lowcode:build",
     "eslint": "eslint --cache --ext .js,.jsx ./",

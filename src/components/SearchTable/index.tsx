@@ -334,7 +334,13 @@ class SearchTable extends Component<IProTableProps, any> {
                       Modal.confirm({
                         content: `确认${button.label}吗?`,
                         onOk: () => {
-                          button.url && request(button.url, record).then(res => {
+                          let { url } = button
+                          if (url?.indexOf('{') > 0) {
+                            url = url.replace(/{(\w+)}/, (match, $1) => {
+                              return record[$1]
+                            })
+                          }
+                          button.url && request(url, record).then(res => {
                             this.actionRef.current.reload()
                           })
                         },
