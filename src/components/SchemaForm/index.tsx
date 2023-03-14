@@ -102,16 +102,18 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
       if (detailUrl?.url) {
         url = detailUrl?.url
       }
-
-     window?.request(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }, {}).then((res:any) => {
-        this.setState({ defaultValue: res.payload })
-      })
+      if (window?.request) {
+        window?.request(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }, {}).then((res: any) => {
+          this.setState({ defaultValue: res.payload })
+        })
+      }
     }
+
   }
 
   async deleteItem(item, dataUrl) {
@@ -351,7 +353,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
             onFinish={this.onFinish}
             submitter={{
               render: (_: any, dom: any) => {
-                
+
                 if (mode === 'view') {
                   return null
                 } else {
