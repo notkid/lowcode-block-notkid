@@ -340,7 +340,7 @@ class SearchTable extends Component<IProTableProps, any> {
                               return record[$1]
                             })
                           }
-                          button.url && request(url, record).then(res => {
+                          button.url && window.request(url, record).then(res => {
                             this.actionRef.current.reload()
                           })
                         },
@@ -354,7 +354,7 @@ class SearchTable extends Component<IProTableProps, any> {
                       Modal.confirm({
                         content: `确认${buttonText}吗?`,
                         onOk: () => {
-                          button.url && request(`${button.url}/${record.id}`, 'POST', {
+                          button.url && window.request(`${button.url}/${record.id}`, 'POST', {
                             userId: record.id,
                             [button.enableField]: Number(!record[button.enableField])
                           }).then(res => {
