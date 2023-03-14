@@ -4,7 +4,8 @@ import {
   BetaSchemaForm as OriginalBetaSchemaForm,
   ProForm as OriginalProForm,
   ActionType,
-  ProColumnType
+  ProColumnType,
+  FooterToolbar
 } from '@ant-design/pro-components'
 import type { ProFormInstance } from '@ant-design/pro-components'
 import { Button, DatePicker, Select, TablePaginationConfig } from 'antd'
@@ -14,7 +15,7 @@ import { request as innerRequest } from '../../request'
 import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from '../../shared/index'
 import { FormProps } from 'rc-field-form/lib/Form'
-import {RemoteSelect} from './components/RemoteSelect'
+import { RemoteSelect } from './components/RemoteSelect'
 
 let request = window.request || innerRequest
 
@@ -40,7 +41,7 @@ export type IBetaSchemaFormProps = React.ComponentProps<typeof OriginalBetaSchem
   columns?: IExtendsColType
   intl?: string
   onValuesChange?: FormProps['onValuesChange']
-  detailUrl?: string
+  detailUrl?: any
   submitUrl?: string
 }
 
@@ -91,10 +92,24 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
   componentDidMount() {
     // 把操作方法挂载到 class instance 上，可通过 this.$ 调用
     defineGetterProperties(this, [this.actionRef, this.formRef])
-    const {mode, detailUrl} = this.props
-    if(mode === 'edit' || mode ==='view') {
-      detailUrl && request(detailUrl,).then((response) => {
-        this.setState({ defaultValue: response.payload})
+    const { mode, detailUrl } = this.props
+    if (mode === 'edit' || mode === 'view') {
+      let method = ''
+      let url = ''
+      if (detailUrl?.method) {
+        method = detailUrl.method
+      }
+      if (detailUrl?.url) {
+        url = detailUrl?.url
+      }
+
+     window?.request(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }, {}).then((res:any) => {
+        this.setState({ defaultValue: res.payload })
       })
     }
   }
@@ -122,7 +137,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
 
   onFinish = (values: any) => {
     const { submitUrl } = this.props
-    return window.request(submitUrl,{
+    return window.request(submitUrl, {
       methods: 'POST',
       data: values
     })
@@ -210,18 +225,18 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
     }
     // 劫持渲染标签类型的列
     const newColumns = columns?.map((item: any) => {
-      if(item.valueType==='remote') {
+      if (item.valueType === 'remote') {
         return {
           ...item,
           // renderFormItem: () => <DatePicker.RangePicker />,
-          renderFormItem:(schema,config,form) => {
+          renderFormItem: (schema, config, form) => {
             return (
               <RemoteSelect url={item.url} />
             )
           }
         }
       }
-     return item
+      return item
     })
 
     if (showOption) {
@@ -324,7 +339,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
             }
             title="新建表单"
             layout={layout}
-            disabled={mode==='view'}
+            disabled={mode === 'view'}
             layoutType={layoutType}
             // {...this.props}
             columns={newColumns}
@@ -334,6 +349,15 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
             // form={{ onValuesChange }}
             request={finalRequest}
             onFinish={this.onFinish}
+            submitter={{
+              render: (_: any, dom: any) => {
+                if (mode === 'view') {
+                  return null
+                } else {
+                  <FooterToolbar>{dom}</FooterToolbar>
+                }
+              },
+            }}
           />
 
         </div>
