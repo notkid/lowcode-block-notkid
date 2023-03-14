@@ -279,8 +279,25 @@ const NotkidMeta: ComponentMetadata = {
                             {
                               title: '可点击弹窗表格',
                               value: 'clickableModalTable'
-                            }
+                            },
                           ]
+                        }
+                      }
+                    },
+                    {
+                      name: 'bizFormatProps',
+                      title: {
+                        label: '业务格式化选择'
+                      },
+                      propType: 'string',
+                      setter: {
+                        componentName: 'SelectSetter',
+                        props: {
+                          options: [
+                            {
+                              title: '犀鸟云日期区间',
+                              value: 'xny-dateRange'
+                            },]
                         }
                       }
                     },
@@ -656,7 +673,7 @@ const NotkidMeta: ComponentMetadata = {
                     },
                     {
                       name: 'conditionExpressionList',
-                      title: { label: '满足下面条件才显示'},
+                      title: { label: '满足下面条件才显示' },
                       setter: {
                         componentName: 'ArraySetter',
                         props: {
@@ -709,7 +726,7 @@ const NotkidMeta: ComponentMetadata = {
                     },
                     {
                       name: 'disabledExpressionList',
-                      title: { label: '满足下面条件会禁用'},
+                      title: { label: '满足下面条件会禁用' },
                       setter: {
                         componentName: 'ArraySetter',
                         props: {
