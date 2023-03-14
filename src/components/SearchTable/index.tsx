@@ -219,25 +219,24 @@ class SearchTable extends Component<IProTableProps, any> {
         if (isPlainObj(item.valueEnum)) {
           item.render = (_, record) => {
             const colValue = record[item.dataIndex as string]
-
             const target = item.valueEnum[colValue]
-            return target?.text ? <a
+            return target?.text && item?.clickableArray?.includes(colValue) ? <a
               onClick={(e) => {
                 e.preventDefault();
                 handleClickCell(record)
               }}
-              rel="noopener noreferrer">{target?.text}</a> : ''
+              rel="noopener noreferrer">{target?.text}</a> : <div>{colValue}</div>
           }
         } else {
           item.render = (_, record) => {
             const colValue = record[item.dataIndex as string]
 
-            return colValue ? <a
+            return colValue && item?.clickableArray?.includes(colValue)? <a
               onClick={(e) => {
                 e.preventDefault();
                 handleClickCell(record)
               }}
-              rel="noopener noreferrer">{colValue}</a> : ''
+              rel="noopener noreferrer">{colValue}</a> : <div>{colValue}</div>
           }
         }
 

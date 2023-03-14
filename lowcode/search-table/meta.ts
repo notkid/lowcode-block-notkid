@@ -173,6 +173,20 @@ const NotkidMeta: ComponentMetadata = {
                       isRequired: true
                     },
                     {
+                      name: 'clickableArray',
+                      title: { label: '当为单元格以下值表现为可点击'},
+                      propType: 'Array',
+                      setter: {
+                        componentName: 'ArraySetter',
+                        props: {
+                          itemSetter: {
+                            componentName: 'StringSetter',
+                          },
+                        },
+                        "initialValue": []
+                      }
+                    },
+                    {
                       name: 'valueType',
                       title: { label: '数据类型', tip: 'valueType | 数据类型' },
                       propType: 'string',
