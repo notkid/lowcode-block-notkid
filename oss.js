@@ -101,6 +101,9 @@ const copyFiles = async function copyFiles(oldPath, newPath) {
     }
 };
 
+if (!fs.existsSync(path.join('./dist'))) {
+    fs.mkdirSync('./dist')
+}
 
 copyFiles('./build/lowcode/meta.js', './dist/')
 copyFiles('./build/lowcode/view.js', './dist/')
