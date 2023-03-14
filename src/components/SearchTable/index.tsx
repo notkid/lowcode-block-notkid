@@ -258,10 +258,15 @@ class SearchTable extends Component<IProTableProps, any> {
             }
             if (v.isConditionDisplay && v.conditionExpressionList?.length) {
               return v.conditionExpressionList.every((exp: any) => {
+                const propList = exp?.conditionExpressionFieldValue.split('.')?.filter(v=>v) || []
+                let value = record
+                propList.forEach(v=> {
+                  value = record[v]
+                })
                 if (exp?.conditionExpressionType === 'equals') {
-                  return record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
+                  return value === exp.conditionExpressionValue
                 } else if (exp?.conditionExpressionType === 'notEquals') {
-                  return !record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
+                  return !value === exp.conditionExpressionValue
                 }
               })
             }
@@ -269,10 +274,15 @@ class SearchTable extends Component<IProTableProps, any> {
           }).map((button: any) => {
             if (button.disabledExpressionList?.length) {
               button.disabled = button.disabledExpressionList.every((exp: any) => {
+                const propList = exp?.conditionExpressionFieldValue.split('.')?.filter(v=>v) || []
+                let value = record
+                propList.forEach(v=> {
+                  value = record[v]
+                })
                 if (exp?.conditionExpressionType === 'equals') {
-                  return record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
+                  return value == exp.conditionExpressionValue
                 } else if (exp?.conditionExpressionType === 'notEquals') {
-                  return !record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
+                  return !value == exp.conditionExpressionValue
                 }
               })
             }
