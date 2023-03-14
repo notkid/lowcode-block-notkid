@@ -3,7 +3,8 @@ import { Component, createRef } from 'react'
 import {
   ProTable as OriginalProTable,
   ActionType,
-  ProColumnType
+  ProColumnType,
+  FooterToolbar
 } from '@ant-design/pro-components'
 import type { ProFormInstance } from '@ant-design/pro-components'
 import { Button, TablePaginationConfig } from 'antd'
@@ -31,6 +32,7 @@ export type IProTableProps = React.ComponentProps<typeof OriginalProTable> & {
   intl?: string
   onValuesChange?: FormProps['onValuesChange']
   dataUrl?: string
+  editUrl?: string
 }
 
 const intlMap = {
@@ -121,6 +123,15 @@ class SearchTable extends Component<IProTableProps, any> {
     history.push(path, {
       query: { id: record.id }
     })
+  }
+
+  handleEdit = () => {
+    const history = window?._utils?.History
+    const {editUrl} = this.props
+    if(editUrl && history?.push) {
+      history.push(editUrl)
+    }
+
   }
 
   render() {
@@ -452,6 +463,7 @@ class SearchTable extends Component<IProTableProps, any> {
           form={{ onValuesChange }}
           request={finalRequest}
         />
+        <FooterToolbar><Button type="primary" onClick={this.handleEdit}>编辑</Button></FooterToolbar>
         <Modal
           {...this.props}
           // title={modalTitle}

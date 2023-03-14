@@ -7441,6 +7441,15 @@ const BetachemaFormMeta: ComponentMetadata = {
         setter: ['StringSetter', 'CustomSetter',]
       },
 
+      {
+        name: 'editUrl',
+        title: {
+          label: '点击编辑跳转地址',
+        },
+        propType: 'string',
+        setter: 'StringSetter'
+      },
+
 
       {
         name: 'columns',
@@ -7611,6 +7620,7 @@ const BetachemaFormMeta: ComponentMetadata = {
                       propType: 'string',
                       setter: 'StringSetter'
                     },
+    
                     {
                       name: 'fieldProps',
                       title: {
