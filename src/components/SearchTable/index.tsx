@@ -318,7 +318,7 @@ class SearchTable extends Component<IProTableProps, any> {
             const buttonText = button.buttonType === "enable" ? (record[button.enableField] ? '禁用' : '启用') : button.label
             return (
               <Permission code={button.code} hasPermission={window?._utils?.hasPermission}>
-                <Button disabled={button.disabled} type="link" onClick={(e) => {
+                <a onClick={(e) => {
                   e.preventDefault();
                   if (button.buttonType === 'url') {
                     let { url } = button
@@ -369,7 +369,7 @@ class SearchTable extends Component<IProTableProps, any> {
                   return false
                 }} rel="noopener noreferrer">
                   {buttonText || ''}
-                </Button>
+                </a>
               </Permission>
             )
 
