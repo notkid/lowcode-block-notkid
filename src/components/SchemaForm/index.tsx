@@ -43,6 +43,7 @@ export type IBetaSchemaFormProps = React.ComponentProps<typeof OriginalBetaSchem
   onValuesChange?: FormProps['onValuesChange']
   detailUrl?: any
   submitUrl?: string
+  editUrl?: any
 }
 
 const intlMap = {
@@ -140,9 +141,18 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
   onFinish = (values: any) => {
     const { submitUrl } = this.props
     return window.request(submitUrl, {
-      methods: 'POST',
+      method: 'POST',
       data: values
     })
+  }
+
+  handleEdit = () => {
+    const history = window?._utils?.History
+    const {editUrl} = this.props
+    if(editUrl && history?.push) {
+      history.push(editUrl)
+    }
+
   }
 
   render() {
@@ -357,11 +367,14 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
                 if (mode === 'view') {
                   return null
                 } else {
-                  return <FooterToolbar>{dom}</FooterToolbar>
+                  return dom
                 }
               },
             }}
           />
+          {mode==='view' && (
+            <Button type="primary" onClick={this.handleEdit}>编辑</Button>
+          )}
 
         </div>
 
