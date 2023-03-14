@@ -708,6 +708,59 @@ const NotkidMeta: ComponentMetadata = {
                       }
                     },
                     {
+                      name: 'disabledExpressionList',
+                      title: { label: '满足下面条件会禁用'},
+                      setter: {
+                        componentName: 'ArraySetter',
+                        props: {
+                          itemSetter: {
+                            componentName: 'ObjectSetter',
+                            props: {
+                              config: {
+                                items: [
+                                  {
+                                    name: 'conditionExpressionType',
+                                    title: { label: '条件' },
+                                    propType: 'string',
+                                    isRequired: true,
+                                    setter: {
+                                      componentName: 'SelectSetter',
+                                      props: {
+                                        options: [
+                                          {
+                                            title: '相等',
+                                            value: 'equals'
+                                          },
+                                          {
+                                            title: '不相等',
+                                            value: 'notEquals'
+                                          },
+                                        ]
+                                      }
+                                    }
+                                  },
+                                  {
+                                    name: 'conditionExpressionFieldValue',
+                                    title: { label: '字段名' },
+                                    propType: 'string',
+                                    isRequired: true,
+                                    setter: ['StringSetter']
+                                  },
+                                  {
+                                    name: 'conditionExpressionValue',
+                                    title: { label: '值' },
+                                    propType: 'string',
+                                    isRequired: true,
+                                    setter: ['StringSetter']
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
                       name: 'code',
                       title: { label: '权限点' },
                       propType: 'string',

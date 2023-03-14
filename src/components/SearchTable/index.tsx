@@ -6,7 +6,7 @@ import {
   ProColumnType
 } from '@ant-design/pro-components'
 import type { ProFormInstance } from '@ant-design/pro-components'
-import type { TablePaginationConfig } from 'antd'
+import { Button, TablePaginationConfig } from 'antd'
 import { Tag, ConfigProvider, Modal } from 'antd'
 import zhCNIntl from 'antd/es/locale/zh_CN'
 import enUSIntl from 'antd/es/locale/en_US'
@@ -265,11 +265,17 @@ class SearchTable extends Component<IProTableProps, any> {
                 }
               })
             }
-            // if(v.hasPermission) {
-
-            // }
             return true
           }).map((button: any) => {
+            if (button.disabledExpressionList?.length) {
+              button.disabled = button.disabledExpressionList.every((exp: any) => {
+                if (exp?.conditionExpressionType === 'equals') {
+                  return record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
+                } else if (exp?.conditionExpressionType === 'notEquals') {
+                  return !record[exp.conditionExpressionFieldValue] === exp.conditionExpressionValue
+                }
+              })
+            }
             console.log(extraButtons)
             if (button.buttonType === 'export') {
               return <Permission code={button.code} hasPermission={window?._utils?.hasPermission}><ImportDialogButton {...button} /></Permission>
@@ -281,7 +287,7 @@ class SearchTable extends Component<IProTableProps, any> {
             const buttonText = button.buttonType === "enable" ? (record[button.enableField] ? '禁用' : '启用') : button.label
             return (
               <Permission code={button.code} hasPermission={window?._utils?.hasPermission}>
-                <a onClick={(e) => {
+                <Button disabled={button.disabled} type="link" onClick={(e) => {
                   e.preventDefault();
                   if (button.buttonType === 'url') {
                     let { url } = button
@@ -326,7 +332,7 @@ class SearchTable extends Component<IProTableProps, any> {
                   return false
                 }} rel="noopener noreferrer">
                   {buttonText || ''}
-                </a>
+                </Button>
               </Permission>
             )
 

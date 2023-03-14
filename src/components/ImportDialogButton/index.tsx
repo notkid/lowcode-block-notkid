@@ -24,7 +24,6 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
         setVisible(true)
     }
     const handleCancel = () => {
-        debugger
         setVisible(false)
     }
 
