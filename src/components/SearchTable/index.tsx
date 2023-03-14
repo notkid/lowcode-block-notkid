@@ -205,8 +205,33 @@ class SearchTable extends Component<IProTableProps, any> {
 
     // 劫持渲染标签类型的列
     columns?.map((item) => {
-      console.log(item, 'itemitem')
-      if (isPlainObj(item.valueEnum) && (item as any).renderTag === true) {
+      if (item.valueType === 'clickableModalTable') {
+        if (isPlainObj(item.valueEnum)) {
+          item.render = (_, record) => {
+            const colValue = record[item.dataIndex as string]
+
+            const target = item.valueEnum[colValue]
+            return target?.text ? <a
+              onClick={(e) => {
+                e.preventDefault();
+                handleClickCell(record)
+              }}
+              rel="noopener noreferrer">{target?.text}</a> : ''
+          }
+        } else {
+          item.render = (_, record) => {
+            const colValue = record[item.dataIndex as string]
+
+            return colValue ? <a
+              onClick={(e) => {
+                e.preventDefault();
+                handleClickCell(record)
+              }}
+              rel="noopener noreferrer">{colValue}</a> : ''
+          }
+        }
+
+      } else if (isPlainObj(item.valueEnum) && (item as any).renderTag === true) {
         item.render = (_, record) => {
           const colValue = record[item.dataIndex as string]
 
@@ -218,39 +243,9 @@ class SearchTable extends Component<IProTableProps, any> {
             '-'
           )
         }
-      } else if (item.valueType === 'clickableModalTable') {
-        if (isPlainObj(item.valueEnum)) {
-          item.render = (_, record) => {
-            const colValue = record[item.dataIndex as string]
-
-            const target = item.valueEnum[colValue]
-            return target?.text ? <a
-              onClick={(e) => {
-                e.preventDefault();
-                this.setState(() => ({
-                  modalVisible: true
-                }))
-              }}
-              rel="noopener noreferrer">{target?.text}</a> : ''
-          }
-        } else {
-          item.render = (_, record) => {
-            const colValue = record[item.dataIndex as string]
-
-            return colValue ? <a
-              onClick={(e) => {
-                e.preventDefault();
-                handleClickCell()
-              }}
-              rel="noopener noreferrer">{colValue}</a> : ''
-          }
-        }
-
       }
     })
     if (showOption) {
-      console.log(showOption)
-
       const options = {
         title: '操作',
         dataIndex: 'option',
