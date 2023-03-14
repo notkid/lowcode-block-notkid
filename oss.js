@@ -101,7 +101,7 @@ const copyFiles = async function copyFiles(oldPath, newPath) {
     }
 };
 
-if (!fs.existsSync(path.join('./dist'))) {
+if (!fs.existsSync('./dist')) {
     fs.mkdirSync('./dist')
 }
 
