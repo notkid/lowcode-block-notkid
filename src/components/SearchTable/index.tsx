@@ -480,7 +480,6 @@ class SearchTable extends Component<IProTableProps, any> {
           form={{ onValuesChange }}
           request={finalRequest}
         />
-        <FooterToolbar><Button type="primary" onClick={this.handleEdit}>编辑</Button></FooterToolbar>
         <Modal
           {...this.props}
           // title={modalTitle}
