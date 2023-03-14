@@ -7,8 +7,7 @@ import {
   FooterToolbar
 } from '@ant-design/pro-components'
 import type { ProFormInstance } from '@ant-design/pro-components'
-import { Button, TablePaginationConfig } from 'antd'
-import { Tag, ConfigProvider, Modal } from 'antd'
+import { Button, TablePaginationConfig, Tag, ConfigProvider, Modal } from 'antd'
 import zhCNIntl from 'antd/es/locale/zh_CN'
 import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from '../../shared/index'
@@ -127,8 +126,8 @@ class SearchTable extends Component<IProTableProps, any> {
 
   handleEdit = () => {
     const history = window?._utils?.History
-    const {editUrl} = this.props
-    if(editUrl && history?.push) {
+    const { editUrl } = this.props
+    if (editUrl && history?.push) {
       history.push(editUrl)
     }
 
@@ -148,7 +147,7 @@ class SearchTable extends Component<IProTableProps, any> {
       extraButtons = [],
       dataPath = 'payload.content',
       modalSlot,
-      handleClickCell
+      handleClickCell,
     } = this.props
 
     const { selectedRowKeys, collapsed, modalVisible } = this.state
@@ -255,6 +254,17 @@ class SearchTable extends Component<IProTableProps, any> {
           )
         }
       }
+
+      if (item.bizFormatProps) {
+        if (item.bizFormatProps === 'xny-dateRange') {
+          item.search = {
+            ...(item.search || {}),
+            transform: (value) => ({
+              [item.dataIndex]: `${value[0]} ~ ${value[1]}`,
+            })
+          }
+        }
+      }
     })
     if (showOption) {
       const options = {
@@ -269,9 +279,9 @@ class SearchTable extends Component<IProTableProps, any> {
             }
             if (v.isConditionDisplay && v.conditionExpressionList?.length) {
               return v.conditionExpressionList.every((exp: any) => {
-                const propList = exp?.conditionExpressionFieldValue?.split('.')?.filter(v=>v) || []
+                const propList = exp?.conditionExpressionFieldValue?.split('.')?.filter(v => v) || []
                 let value = record
-                propList.forEach(v=> {
+                propList.forEach(v => {
                   value = value[v]
                 })
                 if (exp?.conditionExpressionType === 'equals') {
@@ -285,9 +295,9 @@ class SearchTable extends Component<IProTableProps, any> {
           }).map((button: any) => {
             if (button.disabledExpressionList?.length) {
               button.disabled = button.disabledExpressionList.every((exp: any) => {
-                const propList = exp?.conditionExpressionFieldValue?.split('.')?.filter(v=>v) || []
+                const propList = exp?.conditionExpressionFieldValue?.split('.')?.filter(v => v) || []
                 let value = record
-                propList.forEach(v=> {
+                propList.forEach(v => {
                   value = value[v]
                 })
                 if (exp?.conditionExpressionType === 'equals') {
