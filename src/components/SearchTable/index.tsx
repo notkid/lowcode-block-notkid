@@ -24,6 +24,7 @@ interface IValueEnum {
 type IExtendsColType = ProColumnType & {
   valueEnum?: IValueEnum[]
   renderTag?: boolean
+  clickableArray: any
 }
 
 export type IProTableProps = React.ComponentProps<typeof OriginalProTable> & {
@@ -281,8 +282,9 @@ class SearchTable extends Component<IProTableProps, any> {
                 const propList = exp?.conditionExpressionFieldValue?.split('.')?.filter(v => v) || []
                 let value = record
                 propList.forEach(v => {
-                  value = value[v]
+                  value = value[v] 
                 })
+                debugger
                 if (exp?.conditionExpressionType === 'equals') {
                   return value === exp.conditionExpressionValue
                 } else if (exp?.conditionExpressionType === 'notEquals') {

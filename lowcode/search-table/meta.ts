@@ -1987,10 +1987,16 @@ const getDataSource = () => {
       loan: 700000,
       trade_progress: 17,
       address: '西湖区湖底公园1号',
+      buttonVisible: {
+        add: true
+      },
       create_time: '2022-04-21 21:00',
       status: 'close'
     },
     {
+      buttonVisible: {
+        add: false
+      },
       id: '2',
       name: '王一博',
       age: 28,
