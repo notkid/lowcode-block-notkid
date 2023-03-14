@@ -351,10 +351,11 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
             onFinish={this.onFinish}
             submitter={{
               render: (_: any, dom: any) => {
+                
                 if (mode === 'view') {
                   return null
                 } else {
-                  <FooterToolbar>{dom}</FooterToolbar>
+                  return <FooterToolbar>{dom}</FooterToolbar>
                 }
               },
             }}
