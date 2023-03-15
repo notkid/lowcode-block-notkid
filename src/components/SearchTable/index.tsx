@@ -113,12 +113,23 @@ class SearchTable extends Component<IProTableProps, any> {
 
   jump = (record: any) => {
     const history = window._utils.History
-    const Map = {}
-    let path = '/kingdee/data-mapping-tax'
-    if (record.type === 1) {
-      path = '/kingdee/data-mapping-sku'
-    } else {
-      path = '/kingdee/data-mapping-tax'
+    let path = '/wp-kingdee/data-mapping-tax'
+    if (record.type == 1) {
+      path = '/wp-kingdee/data-mapping-sku'
+    } else if (record.type == 2) {
+      path = '/wp-kingdee/data-mapping-settlement'
+     } else if(record.type == 3) {
+      path = '/wp-kingdee/data-mapping-depot'
+     }
+     else if(record.type == 4) {
+      path = '/wp-kingdee/data-mapping-supplier'
+     }
+     else if(record.type == 6) {
+      path = '/wp-kingdee/data-mapping-classify'
+     }else if(record.type == 7) {
+      path = '/wp-kingdee/data-mapping-bank'
+     }else {
+      path = '/wp-kingdee/data-mapping-tax'
     }
     history.push(path, {
       query: { id: record.id }
@@ -283,7 +294,7 @@ class SearchTable extends Component<IProTableProps, any> {
                 const propList = exp?.conditionExpressionFieldValue?.split('.')?.filter(v => v) || []
                 let value = record
                 propList.forEach(v => {
-                  value = value[v] 
+                  value = value[v]
                 })
                 if (exp?.conditionExpressionType === 'equals') {
                   return value.toString() == exp.conditionExpressionValue

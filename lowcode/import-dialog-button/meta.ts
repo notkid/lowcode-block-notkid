@@ -76,6 +76,85 @@ const ImportDialogButtonMeta: ComponentMetadata = {
           "isRequired": true,
           "initialValue": ""
         }
+      },
+      {
+        "title": {
+          "label": {
+            "type": "i18n",
+            "en-US": "label",
+            "zh-CN": "label"
+          }
+        },
+        "name": "label",
+        "setter": {
+          "componentName": "StringSetter",
+          "isRequired": true,
+          "initialValue": ""
+        }
+      },
+      {
+        "title": {
+          "label": {
+            "type": "i18n",
+            "en-US": "templateType",
+            "zh-CN": "templateType"
+          }
+        },
+        "name": "templateType",
+        "setter": {
+          "componentName": "StringSetter",
+          "isRequired": true,
+          "initialValue": ""
+        }
+      },
+      {
+        "title": {
+          "label": {
+            "type": "i18n",
+            "en-US": "valueEnum",
+            "zh-CN": "valueEnum"
+          }
+        },
+        "name": "valueEnum",
+        "setter": {
+          "componentName": "ObjectSetter",
+          "props": {
+            "config": {
+              "items": [
+                {
+                  "title": {
+                    "label": {
+                      "type": "i18n",
+                      "en-US": "string",
+                      "zh-CN": "string"
+                    }
+                  },
+                  "name": "string",
+                  "setter": {
+                    "componentName": "ObjectSetter",
+                    "props": {
+                      "config": {
+                        "extraSetter": {
+                          "componentName": "MixedSetter",
+                          "isRequired": false,
+                          "props": {}
+                        }
+                      }
+                    },
+                    "isRequired": true,
+                    "initialValue": {}
+                  }
+                }
+              ],
+              "extraSetter": {
+                "componentName": "MixedSetter",
+                "isRequired": false,
+                "props": {}
+              }
+            }
+          },
+          "isRequired": true
+        }
       }
     ],
     "supports": {

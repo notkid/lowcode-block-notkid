@@ -1,31 +1,42 @@
-import { Button, ConfigProvider, Modal } from 'antd';
+import { Button, ConfigProvider, Modal, message } from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
-import React, { Children, ReactNode, useRef, useState } from 'react';
+import React, { Children, ReactNode, useMemo, useRef, useState } from 'react';
 import { request as innerRequest } from '../../request'
+import { defineGetterProperties, isPlainObj } from '../../shared/index'
 
 
 
-let request = window.request || innerRequest;
+let request = window?.request
 
 
 type ImportDialogButtonProps = {
     modalTitle: string
-    buttonText: string
     children: ReactNode
     downloadExcelUrl: string
     uploadExcelUrl: string
-    label: string
+    templateType: string
+    valueEnum: {string: object}
 }
 
 const ImportDialogButton = (props: ImportDialogButtonProps) => {
     const [visible, setVisible] = useState(false)
-    const { modalTitle, buttonText, children, downloadExcelUrl, uploadExcelUrl } = props
+    const { downloadExcelUrl, uploadExcelUrl, valueEnum={}, templateType } = props
     const showModal = () => {
         setVisible(true)
     }
     const handleCancel = () => {
         setVisible(false)
     }
+
+    const templateTypeName =  valueEnum[templateType] || ''
+
+    const modalTitle: string = useMemo(() => {
+        if(isPlainObj(valueEnum)) {
+            return `${valueEnum[templateType]}导入`
+        } else {
+            return '导入'
+        }
+    }, [])
 
     const handleDownload = () => {
         request(downloadExcelUrl, {
@@ -49,28 +60,18 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
         })
     }
 
-    const uploadProps: any = {
-        name: 'file',
-        multiple: true,
-        action: uploadExcelUrl,
-        onChange(info) {
-            const { status } = info.file;
-            if (status !== 'uploading') {
-                console.log(info.file, info.fileList);
-            }
-            if (status === 'done') {
-                // message.success(`${info.file.name} file uploaded successfully.`);
-            } else if (status === 'error') {
-                // message.error(`${info.file.name} file upload failed.`);
-            }
-        },
-        onDrop(e) {
-            console.log('Dropped files', e.dataTransfer.files);
-        },
-    };
-
     const handleImportExcel = () => {
         window?._utils?.importExcel([], (res: any) => {
+            debugger
+            window.request(uploadExcelUrl, {
+                method: 'POST',
+                data: res
+            }).then(res=> {
+                if(res?.payload?.msg) {
+                    
+                    message.error(res?.payload?.msg)
+                }
+            })
         });
       }
 
@@ -82,20 +83,19 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
                 showModal()
             }}>
                 导入
-
             </a>
 
             <Modal title={modalTitle} {...props} visible={visible} onCancel={handleCancel} okText="确认" cancelText="取消" maskClosable={true}>
                 <p>第一步：下载银行账号导入初始化模板</p>
-                <div>模板.xls<Button type="text" onClick={handleDownload}>下载</Button></div>
+                <div>{templateTypeName}初始化模板模板.xls<Button type="link" onClick={handleDownload}>下载</Button></div>
                 <p>第二步：导入填写完成的Excel文件</p>
                 <div onClick={handleImportExcel}>
                     <p className="ant-upload-drag-icon">
                         {/* <Inbox /> */}
                     </p>
-                    <p className="ant-upload-text">上传 excel 银行账号导入初始化表</p>
+                    <p className="ant-upload-text">上传 excel{templateTypeName}导入初始化表</p>
                     <p className="ant-upload-hint">
-                        上传 excel 银行账号导入初始化表点击上传
+                        上传 excel {templateTypeName}导入初始化表<Button type="link">点击上传</Button>
                     </p>
                 </div>
 
