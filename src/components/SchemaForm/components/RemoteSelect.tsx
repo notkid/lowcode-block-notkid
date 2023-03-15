@@ -15,7 +15,6 @@ export interface DebounceSelectProps<ValueType = any>
 }
 
 const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }: DebounceSelectProps<any>) => {
-    debugger
     const [fetching, setFetching] = useState(false);
     const [options, setOptions] = useState<any[]>([]);
     const fetchRef = useRef(0);
@@ -55,7 +54,6 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }: Debou
 
 
 const RemoteSelect: React.FC = (props: any) => {
-    debugger
     const [value, setValue] = useState<UserValue[]>([]);
     const { url } = props
     const fetchUserList = (username: string): Promise<UserValue[]> => {
@@ -64,7 +62,6 @@ const RemoteSelect: React.FC = (props: any) => {
             name: username
         })
             .then((body) => {
-                debugger
                 return body.results.map(
                     (user: { name: { first: string; last: string }; login: { username: string } }) => ({
                         label: `${user.name.first} ${user.name.last}`,

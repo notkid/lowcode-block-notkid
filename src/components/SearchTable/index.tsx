@@ -144,6 +144,7 @@ class SearchTable extends Component<IProTableProps, any> {
       request,
       showOption,
       deleteUrl,
+      saveUrl,
       treeRenderField,
       extraButtons = [],
       dataPath = 'payload.content',
@@ -293,21 +294,7 @@ class SearchTable extends Component<IProTableProps, any> {
             }
             return true
           }).map((button: any) => {
-            if (button.disabledExpressionList?.length) {
-              button.disabled = button.disabledExpressionList.every((exp: any) => {
-                const propList = exp?.conditionExpressionFieldValue?.split('.')?.filter(v => v) || []
-                let value = record
-                propList.forEach(v => {
-                  value = value[v]
-                })
-                if (exp?.conditionExpressionType === 'equals') {
-                  return value == exp.conditionExpressionValue
-                } else if (exp?.conditionExpressionType === 'notEquals') {
-                  return !value == exp.conditionExpressionValue
-                }
-              })
-            }
-            console.log(extraButtons)
+
             if (button.buttonType === 'export') {
               return <Permission code={button.code} hasPermission={window?._utils?.hasPermission}><ImportDialogButton {...button} /></Permission>
             }
@@ -445,6 +432,19 @@ class SearchTable extends Component<IProTableProps, any> {
       <ConfigProvider locale={intlMap[intl || 'zhCNIntl']}>
         <OriginalProTable
           {...this.props}
+          editable={{
+            type: 'single',
+            onSave: (key: any, row: any) => {
+              console.log(row)
+              if (row.id && window.request) {
+                return window.request(saveUrl,{
+                  method: 'POST',
+                  data: row
+                })
+              }
+              return Promise.reject()
+            }
+          }}
           search={
             typeof this.props.search === 'boolean'
               ? this.props.search

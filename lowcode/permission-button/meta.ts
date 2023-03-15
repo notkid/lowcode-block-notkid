@@ -61,6 +61,52 @@ const PermissionButtonMeta: ComponentMetadata = {
           "isRequired": true,
           "initialValue": ""
         }
+      },
+      {
+        "title": {
+          "label": {
+            "type": "i18n",
+            "en-US": "buttonType",
+            "zh-CN": "buttonType"
+          }
+        },
+        "name": "buttonType",
+        "setter": {
+          "componentName": "RadioGroupSetter",
+          "props": {
+            "dataSource": [
+              {
+                "label": "request",
+                "value": "request"
+              },
+
+              {
+                "label": "url",
+                "value": "url"
+              },
+              {
+                "label": "addInline",
+                "value": "addInline"
+              }
+            ],
+            "options": [
+              {
+                "label": "request",
+                "value": "request"
+              },
+              {
+                "label": "url",
+                "value": "url"
+              },
+              {
+                "label": "addInline",
+                "value": "addInline"
+              }
+            ]
+          },
+          "isRequired": true,
+          "initialValue": "request"
+        }
       }
     ],
     "supports": {

@@ -45,6 +45,12 @@ const NotkidMeta: ComponentMetadata = {
             setter: ['StringSetter', 'CustomSetter',]
           },
           {
+            name: 'saveUrl',
+            title: { label: '保存url', tip: 'dataSource | 表格数据' },
+            propType: { type: 'oneOfType', value: ['string', 'object'] },
+            setter: ['StringSetter', 'CustomSetter',]
+          },
+          {
             name: 'dataPath',
             title: { label: 'list路径', tip: 'dataSource | 表格数据' },
             propType: 'string',
