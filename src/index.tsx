@@ -7,5 +7,6 @@ export { SchemaForm as BetachemaForm } from './components/SchemaForm'
 export {ModalButton} from './components/ModalButton'
 
 export {ImportDialogButton} from './components/ImportDialogButton'
+export {PermissionButton} from './components/PermissionButton'
 // export { SchemaForm as BaseSchemaForm } from './components/SchemaForm'
 // export type { IBetaSchemaFormProps } from './components/SchemaForm'
