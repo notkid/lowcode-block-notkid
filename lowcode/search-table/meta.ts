@@ -685,6 +685,7 @@ const NotkidMeta: ComponentMetadata = {
                         }
                       }
                     },
+
                     {
                       name: 'isConditionDisplay',
                       title: { label: '条件展示' },
@@ -840,6 +841,15 @@ const NotkidMeta: ComponentMetadata = {
                         "isRequired": false,
                         "initialValue": false
                       }
+                    },
+                    {
+                      name: 'valueEnum',
+                      title: {
+                        label: '枚举定义',
+                        tip: 'valueEnum | 值的枚举，会自动转化把值当成 key 来取出要显示的内容'
+                      },
+                      propType: 'object',
+                      setter: 'JsonSetter'
                     },
                   ]
                 }

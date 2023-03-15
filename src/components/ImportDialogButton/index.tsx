@@ -13,14 +13,14 @@ type ImportDialogButtonProps = {
     modalTitle: string
     children: ReactNode
     downloadExcelUrl: string
-    uploadExcelUrl: string
+    importExcelUrl: string
     templateType: string
     valueEnum: {string: object}
 }
 
 const ImportDialogButton = (props: ImportDialogButtonProps) => {
     const [visible, setVisible] = useState(false)
-    const { downloadExcelUrl, uploadExcelUrl, valueEnum={}, templateType } = props
+    const { downloadExcelUrl, importExcelUrl, valueEnum={}, templateType } = props
     const showModal = () => {
         setVisible(true)
     }
@@ -62,8 +62,7 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
 
     const handleImportExcel = () => {
         window?._utils?.importExcel([], (res: any) => {
-            debugger
-            window.request(uploadExcelUrl, {
+            window.request(importExcelUrl, {
                 method: 'POST',
                 data: res
             }).then(res=> {
@@ -85,11 +84,11 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
                 导入
             </a>
 
-            <Modal title={modalTitle} {...props} visible={visible} onCancel={handleCancel} okText="确认" cancelText="取消" maskClosable={true}>
+            <Modal title={modalTitle} {...props} footer={null} visible={visible} onCancel={handleCancel} okText="确认" cancelText="取消" maskClosable={true}>
                 <p>第一步：下载银行账号导入初始化模板</p>
                 <div>{templateTypeName}初始化模板模板.xls<Button type="link" onClick={handleDownload}>下载</Button></div>
                 <p>第二步：导入填写完成的Excel文件</p>
-                <div onClick={handleImportExcel}>
+                <div onClick={handleImportExcel} style={{border: '1px dashed #ddd', borderRadius: '4px'}}>
                     <p className="ant-upload-drag-icon">
                         {/* <Inbox /> */}
                     </p>
@@ -98,13 +97,8 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
                         上传 excel {templateTypeName}导入初始化表<Button type="link">点击上传</Button>
                     </p>
                 </div>
-
-                    
-
             </Modal>
         </>
-
-
     )
 }
 
