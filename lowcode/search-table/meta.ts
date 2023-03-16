@@ -815,6 +815,28 @@ const NotkidMeta: ComponentMetadata = {
                       setter: ['StringSetter',]
                     },
                     {
+                      name: 'paramsSendWay',
+                      title: { label: '参数是哪种方式传递' },
+                      propType: 'string',
+                      isRequired: true,
+                      setter: {
+                        componentName: 'SelectSetter',
+                        initialValue: 'object',
+                        props: {
+                          options: [
+                            {
+                              title: '参数拼接到路径后面',
+                              value: 'path'
+                            },
+                            {
+                              title: '对象方式传参',
+                              value: 'object'
+                            }
+                            ]
+                          }
+                        }
+                    },
+                    {
                       name: 'url',
                       title: { label: '请求地址' },
                       propType: 'string',
@@ -1544,7 +1566,7 @@ const NotkidMeta: ComponentMetadata = {
                 title: '工具栏操作插槽',
                 initialValue: {
                   type: 'JSSlot',
-                  params: ['currentPageData'],
+                  params: ['ref'],
                   value: []
                 }
               },

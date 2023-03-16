@@ -72,21 +72,24 @@ const PermissionButtonMeta: ComponentMetadata = {
         },
         "name": "buttonType",
         "setter": {
-          "componentName": "RadioGroupSetter",
+          "componentName": "SelectSetter",
           "props": {
             "dataSource": [
               {
                 "label": "request",
                 "value": "request"
               },
-
               {
                 "label": "url",
                 "value": "url"
               },
               {
-                "label": "addInline",
-                "value": "addInline"
+                "label": "export",
+                "value": "export"
+              },
+              {
+                "label": "modal",
+                "value": "modal"
               }
             ],
             "options": [
@@ -99,8 +102,12 @@ const PermissionButtonMeta: ComponentMetadata = {
                 "value": "url"
               },
               {
-                "label": "addInline",
-                "value": "addInline"
+                "label": "export",
+                "value": "export"
+              },
+              {
+                "label": "modal",
+                "value": "modal"
               }
             ]
           },

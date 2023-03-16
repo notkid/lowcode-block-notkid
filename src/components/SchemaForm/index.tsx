@@ -44,6 +44,8 @@ export type IBetaSchemaFormProps = React.ComponentProps<typeof OriginalBetaSchem
   detailUrl?: any
   submitUrl?: string
   editUrl?: any
+  modalFormTitle?:string
+  modalFormButtonText?: string
 }
 
 const intlMap = {
@@ -104,7 +106,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
         url = detailUrl?.url
       }
       if (window?.request) {
-        window?.request(url, {
+        window?.request(`${url}/${window?._utils?.params?.id}`, {
           method,
           headers: {
             'Content-Type': 'application/json',
@@ -171,7 +173,9 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
       layout = 'inline',
       layoutType = "ProForm",
       defaultValue,
-      mode
+      mode,
+      modalFormTitle,
+      modalFormButtonText
     } = this.props
 
     const { selectedRowKeys, collapsed } = this.state
@@ -342,15 +346,14 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
         <div
           style={{
             margin: 24,
-            width: 500
           }}
         >  <OriginalBetaSchemaForm
             trigger={
               <Button type="primary">
-                新建表单
+                {modalFormButtonText}
               </Button>
             }
-            title="新建表单"
+            title={modalFormTitle}
             layout={layout}
             disabled={mode === 'view'}
             layoutType={layoutType}

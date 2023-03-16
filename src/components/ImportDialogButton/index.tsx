@@ -28,7 +28,6 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
     const handleCancel = () => {
         setVisible(false)
     }
-
     const typeName =  valueEnum[type]?.text || ''
 
     const columns = valueEnum[type]?.columns|| []

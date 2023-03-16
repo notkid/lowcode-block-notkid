@@ -58,14 +58,17 @@ const RemoteSelect: React.FC = (props: any) => {
     const { url } = props
     const fetchUserList = (username: string): Promise<UserValue[]> => {
 
-        return request(url, "GET", {
-            name: username
+        return window?.request(url, {
+            method: 'GET',
+            data: {
+                storeName: username
+            }
         })
-            .then((body) => {
-                return body.results.map(
-                    (user: { name: { first: string; last: string }; login: { username: string } }) => ({
-                        label: `${user.name.first} ${user.name.last}`,
-                        value: user.login.username,
+            .then((data: any) => {
+                return data.payload.content.map(
+                    (v: any) => ({
+                        label: v.storeName,
+                        value: v.id,
                     }),
                 )
             }

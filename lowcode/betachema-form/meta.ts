@@ -7449,7 +7449,22 @@ const BetachemaFormMeta: ComponentMetadata = {
         propType: 'string',
         setter: 'StringSetter'
       },
-
+      {
+        name: 'modalFormTitle',
+        title: {
+          label: 'modalFormTitle',
+        },
+        propType: 'string',
+        setter: 'StringSetter'
+      },
+      {
+        name: 'modalFormButtonText',
+        title: {
+          label: 'modalFormButtonText',
+        },
+        propType: 'string',
+        setter: 'StringSetter'
+      },
 
       {
         name: 'columns',

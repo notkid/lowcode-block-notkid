@@ -14,6 +14,7 @@ import { defineGetterProperties, isPlainObj } from '../../shared/index'
 import { FormProps } from 'rc-field-form/lib/Form'
 import { ImportDialogButton } from '../ImportDialogButton'
 import { Permission } from '../Permission/index'
+import Context from './context'
 
 interface IValueEnum {
   text: string
@@ -328,7 +329,7 @@ class SearchTable extends Component<IProTableProps, any> {
                       })
                     }
                     console.log(this, 'asdfasdfasdfasthis')
-                    url && window._utils?.History?.push(url)
+                    url && window._utils?.History?.push(`${url}`)
                   } else if (button.buttonType === "request") {
                     if (button.needConfirm) {
                       Modal.confirm({
@@ -340,15 +341,28 @@ class SearchTable extends Component<IProTableProps, any> {
                               return record[$1]
                             })
                           }
-                          button.url && window.request(url, record).then(res => {
-                            this.actionRef.current.reload()
-                          })
+                          if(button?.paramsSendWay === 'object') {
+                            button.url && window.request(url, record).then(res => {
+                              this.actionRef.current.reload()
+                            })
+                          }else {
+                            button.url && window.request(`${url}/${record.id}`).then(res => {
+                              this.actionRef.current.reload()
+                            })
+                          }
+                         
                         },
                       })
                     } else {
-                      button.url && window.request(url, record).then(res => {
-                        this.actionRef.current.reload()
-                      })
+                      if(button?.paramsSendWay === 'object') {
+                        button.url && window.request(button.url, record).then(res => {
+                          this.actionRef.current.reload()
+                        })
+                      }else {
+                        button.url && window.request(`${button.url}/${record.id}`).then(res => {
+                          this.actionRef.current.reload()
+                        })
+                      }
                     }
 
                   } else if (button.buttonType === "editInline") {
@@ -455,6 +469,7 @@ class SearchTable extends Component<IProTableProps, any> {
     // }
     return (
       <ConfigProvider locale={intlMap[intl || 'zhCNIntl']}>
+        <Context.Provider value= {{actionRef:this.actionRef, formRef: this.formRef}}>
         <OriginalProTable
           {...this.props}
           editable={{
@@ -508,6 +523,8 @@ class SearchTable extends Component<IProTableProps, any> {
           form={{ onValuesChange }}
           request={finalRequest}
         />
+        </Context.Provider>
+      
         <Modal
           {...this.props}
           // title={modalTitle}

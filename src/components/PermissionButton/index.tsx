@@ -1,6 +1,7 @@
 import { Button, ConfigProvider, Modal } from 'antd';
 import React, { Children, ReactNode, useRef, useState } from 'react';
 import { Permission } from '../Permission'
+import Context from '../SearchTable/context';
 
 
 type ButtonType = 'url' | 'request' | 'export' | 'modal'
@@ -21,7 +22,9 @@ const PermissionButton = (props: PermissionButtonProps) => {
         history.push(url)
     }
 
-    const handleClick = () => {
+    const handleClick = (value: any) => {
+        const {formRef} = value
+        const formData = formRef?.current?.getFieldsFormatValue?.()
         if (buttonType === 'url') {
             jump()
         }else if (buttonType === 'request') {
@@ -30,7 +33,9 @@ const PermissionButton = (props: PermissionButtonProps) => {
             }
         } else if (buttonType === 'export') {
             if (window?.request) {
-                window.request(url)
+                window.request(url, {
+                    data: formData
+                })
             }
         }
         else if (buttonType === 'modal') {
@@ -39,11 +44,20 @@ const PermissionButton = (props: PermissionButtonProps) => {
     }
 
     return (<ConfigProvider>
-        <Permission code={code} hasPermission={window?._utils?.hasPermission}>
-            <Button type="primary" onClick={handleClick} >
-                {buttonText}
-            </Button>
-        </Permission>
+        <Context.Consumer>
+            {
+                value => {
+                    return (
+                        <Permission code={code} hasPermission={window?._utils?.hasPermission}>
+                        <Button type="primary" onClick={() =>handleClick(value)} >
+                            {buttonText}
+                        </Button>
+                    </Permission>
+                    )
+                }
+            }
+        </Context.Consumer>
+       
 
     </ConfigProvider>)
 }
