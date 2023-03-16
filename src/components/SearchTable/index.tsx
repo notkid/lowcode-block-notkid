@@ -307,7 +307,7 @@ class SearchTable extends Component<IProTableProps, any> {
           }).map((button: any) => {
 
             if (button.buttonType === 'export') {
-              return <Permission code={button.code} hasPermission={window?._utils?.hasPermission}><ImportDialogButton {...button} /></Permission>
+              return <Permission code={button.code} hasPermission={window?._utils?.hasPermission}><ImportDialogButton {...button} {...record} /></Permission>
             }
             // if(button.buttonType==='condition') {
             //   button.displayConditionField

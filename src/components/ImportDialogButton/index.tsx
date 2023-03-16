@@ -14,13 +14,14 @@ type ImportDialogButtonProps = {
     children: ReactNode
     downloadExcelUrl: string
     importExcelUrl: string
-    templateType: string
+    type: string
     valueEnum: {string: object}
+    id: string,
 }
 
 const ImportDialogButton = (props: ImportDialogButtonProps) => {
     const [visible, setVisible] = useState(false)
-    const { downloadExcelUrl, importExcelUrl, valueEnum={}, templateType } = props
+    const { downloadExcelUrl, importExcelUrl, valueEnum={}, type } = props
     const showModal = () => {
         setVisible(true)
     }
@@ -28,15 +29,9 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
         setVisible(false)
     }
 
-    const templateTypeName =  valueEnum[templateType] || ''
+    const typeName =  valueEnum[type]?.text || ''
 
-    const modalTitle: string = useMemo(() => {
-        if(isPlainObj(valueEnum)) {
-            return `${valueEnum[templateType]}导入`
-        } else {
-            return '导入'
-        }
-    }, [])
+    const columns = valueEnum[type]?.columns|| []
 
     const handleDownload = () => {
         request(downloadExcelUrl, {
@@ -62,9 +57,16 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
 
     const handleImportExcel = () => {
         window?._utils?.importExcel([], (res: any) => {
+            const [{data}] = res
+            const result = Object.keys(data).reduce((sum: any, key) => {
+                const column = columns.find((v:any)=>v.label==key)
+                if(column) {
+                    sum[column.prop] = data[key]
+                }
+            },{})
             window.request(importExcelUrl, {
                 method: 'POST',
-                data: res
+                data: result
             }).then(res=> {
                 if(res?.payload?.msg) {
                     
@@ -84,17 +86,17 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
                 导入
             </a>
 
-            <Modal title={modalTitle} {...props} footer={null} visible={visible} onCancel={handleCancel} okText="确认" cancelText="取消" maskClosable={true}>
-                <p>第一步：下载银行账号导入初始化模板</p>
-                <div>{templateTypeName}初始化模板模板.xls<Button type="link" onClick={handleDownload}>下载</Button></div>
+            <Modal title={`${typeName}导入`} {...props} footer={null} visible={visible} onCancel={handleCancel} okText="确认" cancelText="取消" maskClosable={true}>
+                <p>第一步：下载{typeName}导入初始化模板</p>
+                <div>{typeName}初始化模板模板.xls<Button type="link" onClick={handleDownload}>下载</Button></div>
                 <p>第二步：导入填写完成的Excel文件</p>
                 <div onClick={handleImportExcel} style={{border: '1px dashed #ddd', borderRadius: '4px'}}>
                     <p className="ant-upload-drag-icon">
                         {/* <Inbox /> */}
                     </p>
-                    <p className="ant-upload-text">上传 excel{templateTypeName}导入初始化表</p>
+                    <p className="ant-upload-text">上传 excel{typeName}导入初始化表</p>
                     <p className="ant-upload-hint">
-                        上传 excel {templateTypeName}导入初始化表<Button type="link">点击上传</Button>
+                        上传 excel {typeName}导入初始化表<Button type="link">点击上传</Button>
                     </p>
                 </div>
             </Modal>

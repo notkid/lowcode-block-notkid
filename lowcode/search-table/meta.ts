@@ -2007,7 +2007,8 @@ const getDataSource = () => {
         add: true
       },
       create_time: '2022-04-21 21:00',
-      status: 'close'
+      status: 'close',
+      type: '1'
     },
     {
       buttonVisible: {
@@ -2023,7 +2024,8 @@ const getDataSource = () => {
       trade_progress: 36,
       address: '滨江区网商路699号',
       create_time: '2022-04-21 22:00',
-      status: 'running'
+      status: 'running',
+      type: '2'
     }
   ]
 }
