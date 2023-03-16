@@ -33,6 +33,7 @@ export type IProTableProps = React.ComponentProps<typeof OriginalProTable> & {
   onValuesChange?: FormProps['onValuesChange']
   dataUrl?: string
   editUrl?: string
+  showNoColumn?: boolean
 }
 
 const intlMap = {
@@ -161,6 +162,7 @@ class SearchTable extends Component<IProTableProps, any> {
       dataPath = 'payload.content',
       modalSlot,
       handleClickCell,
+      showNoColumn = false
     } = this.props
 
     const { selectedRowKeys, collapsed, modalVisible } = this.state
@@ -412,6 +414,18 @@ class SearchTable extends Component<IProTableProps, any> {
         ],
       }
       columns.push(options)
+    }
+    if(showNoColumn) {
+      columns.unshift({
+          title: '序号',
+          dataIndex: 'no',
+          valueType: 'text',
+          hideInSearch: true,
+          hideInForm: true,
+          renderText:(text, record, index, action) => {
+            return index+1
+          },
+      })
     }
 
     const pagination = this.props.pagination as TablePaginationConfig

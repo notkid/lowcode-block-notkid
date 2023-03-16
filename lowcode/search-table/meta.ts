@@ -70,6 +70,16 @@ const NotkidMeta: ComponentMetadata = {
             setter: 'JsonSetter'
           },
           {
+            name: 'showNoColumn',
+            title: { label: '显示序号列', },
+            propType: 'boolean',
+            setter: {
+              "componentName": "BoolSetter",
+              "isRequired": false,
+              "initialValue": false
+            }
+          },
+          {
             title: {
               label: {
                 type: 'i18n',
