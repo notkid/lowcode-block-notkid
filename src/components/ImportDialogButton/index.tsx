@@ -56,6 +56,7 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
 
     const handleImportExcel = () => {
         window?._utils?.importExcel([], (res: any) => {
+            debugger
             const [{data}] = res
             const result = Object.keys(data).reduce((sum: any, key) => {
                 const column = columns.find((v:any)=>v.label==key)

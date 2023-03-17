@@ -56,7 +56,18 @@ const NotkidMeta: ComponentMetadata = {
             propType: 'string',
             setter: 'StringSetter'
           },
-
+          {
+            name: 'pageName',
+            title: { label: 'page字段名称', tip: 'dataSource | 表格数据' },
+            propType: 'string',
+            setter: 'StringSetter'
+          },
+          {
+            name: 'sizeName',
+            title: { label: 'size字段名称', tip: 'dataSource | 表格数据' },
+            propType: 'string',
+            setter: 'StringSetter'
+          },
           {
             name: 'treeRenderField',
             title: { label: 'treeRenderField', tip: 'dataSource | 表格数据' },
@@ -2139,40 +2150,7 @@ export const snippets: Snippet[] = [
           searchText: '',
           labelWidth: 'auto'
         },
-        toolBarRender: {
-          type: 'JSSlot',
-          params: ['currentPageData'],
-          value: [
-            {
-              componentName: 'Button',
-              props: {
-                type: 'primary',
-                children: '新增',
-                htmlType: 'button',
-                size: 'middle',
-                shape: 'default',
-                icon: {
-                  type: 'JSSlot',
-                  value: [
-                    {
-                      componentName: 'Icon',
-                      props: {
-                        type: 'PlusOutlined',
-                        size: 16,
-                        rotate: 0,
-                        spin: false
-                      }
-                    }
-                  ]
-                },
-                block: false,
-                danger: false,
-                ghost: false,
-                disabled: false
-              }
-            }
-          ]
-        },
+        toolBarRender: null,
         intl: 'zhCNIntl'
       }
     }

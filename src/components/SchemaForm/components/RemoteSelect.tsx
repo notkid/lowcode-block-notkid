@@ -55,17 +55,21 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }: Debou
 
 const RemoteSelect: React.FC = (props: any) => {
     const [value, setValue] = useState<UserValue[]>([]);
-    const { url } = props
+    const { url, onChange } = props
     const fetchUserList = (username: string): Promise<UserValue[]> => {
 
         return window?.request(url, {
-            method: 'GET',
+            method: 'POST',
             data: {
+                appId: "1196271598647115866",
+                isPage: false,
+                tenantId:"default_tenant",
+                type: 1,
                 storeName: username
             }
         })
             .then((data: any) => {
-                return data.payload.content.map(
+                return data?.payload?.content?.map(
                     (v: any) => ({
                         label: v.storeName,
                         value: v.id,
@@ -85,6 +89,7 @@ const RemoteSelect: React.FC = (props: any) => {
             fetchOptions={fetchUserList}
             onChange={(newValue) => {
                 setValue(newValue as UserValue[]);
+                onChange(newValue)
             }}
             style={{ width: '100%' }}
         />

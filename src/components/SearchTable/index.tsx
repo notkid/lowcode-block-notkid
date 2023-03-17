@@ -163,7 +163,9 @@ class SearchTable extends Component<IProTableProps, any> {
       dataPath = 'payload.content',
       modalSlot,
       handleClickCell,
-      showNoColumn = false
+      showNoColumn = false,
+      pageName='pageNo',
+      sizeName='pageSize'
     } = this.props
 
     const { selectedRowKeys, collapsed, modalVisible } = this.state
@@ -185,8 +187,8 @@ class SearchTable extends Component<IProTableProps, any> {
           createdTimeFrom?: string | undefined;
           createdTimeTo?: string | undefined;
         } = {
-          page: current,
-          size: pageSize,
+          [pageName]: current,
+          [sizeName]: pageSize,
         };
         let method = 'POST'
         if (dataUrl?.method) {
@@ -324,7 +326,7 @@ class SearchTable extends Component<IProTableProps, any> {
                   if (button.buttonType === 'url') {
                     let { url } = button
                     if (url?.indexOf('{') > 0) {
-                      url = url.replace(/{(\w+)}/, (match, $1) => {
+                      url = url.replace(/{(\w+)}/g, (match, $1) => {
                         return record[$1]
                       })
                     }
@@ -337,7 +339,7 @@ class SearchTable extends Component<IProTableProps, any> {
                         onOk: () => {
                           let { url } = button
                           if (url?.indexOf('{') > 0) {
-                            url = url.replace(/{(\w+)}/, (match, $1) => {
+                            url = url.replaceAll(/{(\w+)}/g, (match, $1) => {
                               return record[$1]
                             })
                           }
