@@ -258,7 +258,8 @@ class SearchTable extends Component<IProTableProps, any> {
           }
         }
 
-      } else if (isPlainObj(item.valueEnum) && (item as any).renderTag === true) {
+      } 
+      else if (isPlainObj(item.valueEnum) && (item as any).renderTag === true) {
         item.render = (_, record) => {
           const colValue = record[item.dataIndex as string]
 

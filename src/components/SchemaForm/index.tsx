@@ -16,6 +16,8 @@ import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from '../../shared/index'
 import { FormProps } from 'rc-field-form/lib/Form'
 import { RemoteSelect } from './components/RemoteSelect'
+import { Permission } from '../Permission'
+import { PermissionButton } from '../PermissionButton'
 
 let request = window.request || innerRequest
 
@@ -46,6 +48,8 @@ export type IBetaSchemaFormProps = React.ComponentProps<typeof OriginalBetaSchem
   editUrl?: any
   modalFormTitle?:string
   modalFormButtonText?: string
+  width?: string
+  editPermissionCode?: string
 }
 
 const intlMap = {
@@ -106,7 +110,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
         url = detailUrl?.url
       }
       if (window?.request) {
-        window?.request(`${url}/${window?._utils?.params?.id}`, {
+        window?.request(`${url}${(window?._utils?.params?.id)?('/'+window?._utils?.params?.id):''}`, {
           method,
           headers: {
             'Content-Type': 'application/json',
@@ -175,7 +179,10 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
       defaultValue,
       mode,
       modalFormTitle,
-      modalFormButtonText
+      modalFormButtonText,
+      width,
+      editPermissionCode,
+      editUrl,
     } = this.props
 
     const { selectedRowKeys, collapsed } = this.state
@@ -345,7 +352,10 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
       <ConfigProvider locale={intlMap[intl || 'zhCNIntl']}>
         <div
           style={{
-            margin: 24,
+            // margin: 24,
+            padding: '20px',
+            width: width|| '100%',
+            backgroundColor: '#fff'
           }}
         >  <OriginalBetaSchemaForm
             trigger={
@@ -377,7 +387,9 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
             }}
           />
           {mode==='view' && (
-            <Button type="primary" onClick={this.handleEdit}>编辑</Button>
+            <PermissionButton buttonText='编辑' url={editUrl} buttonType="url" code={editPermissionCode} >
+            </PermissionButton>
+           
           )}
 
         </div>

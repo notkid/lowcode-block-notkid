@@ -7440,7 +7440,16 @@ const BetachemaFormMeta: ComponentMetadata = {
         title: { label: '提交url', tip: 'dataSource | 表格数据' },
         setter: ['StringSetter', 'CustomSetter',]
       },
-
+      {
+        name: 'width',
+        title: { label: '表单宽度', tip: 'dataSource | 表格数据' },
+        setter: ['StringSetter']
+      },
+      {
+        name: 'editPermissionCode',
+        title: { label: '编辑按钮权限', tip: 'dataSource | 表格数据' },
+        setter: ['StringSetter']
+      },
       {
         name: 'editUrl',
         title: {

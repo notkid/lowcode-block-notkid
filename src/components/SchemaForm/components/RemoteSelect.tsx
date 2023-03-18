@@ -41,7 +41,6 @@ const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }: Debou
 
     return (
         <Select
-            labelInValue
             filterOption={false}
             onSearch={debounceFetcher}
             notFoundContent={fetching ? <Spin size="small" /> : null}
@@ -85,7 +84,7 @@ const RemoteSelect: React.FC = (props: any) => {
         <DebounceSelect
             mode="multiple"
             value={value}
-            placeholder="Select users"
+            placeholder="请输入门店名称搜索"
             fetchOptions={fetchUserList}
             onChange={(newValue) => {
                 setValue(newValue as UserValue[]);
