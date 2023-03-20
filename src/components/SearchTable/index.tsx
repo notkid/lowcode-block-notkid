@@ -15,6 +15,7 @@ import { FormProps } from 'rc-field-form/lib/Form'
 import { ImportDialogButton } from '../ImportDialogButton'
 import { Permission } from '../Permission/index'
 import Context from './context'
+import { RemoteSelect } from '../SchemaForm/components/RemoteSelect'
 
 interface IValueEnum {
   text: string
@@ -232,7 +233,7 @@ class SearchTable extends Component<IProTableProps, any> {
     }
 
     // 劫持渲染标签类型的列
-    columns?.map((item) => {
+    columns?.map((item: any) => {
       if (item.valueType === 'clickableModalTable') {
         if (isPlainObj(item.valueEnum)) {
           item.render = (_, record) => {
@@ -258,7 +259,11 @@ class SearchTable extends Component<IProTableProps, any> {
           }
         }
 
-      } 
+      } else if(item.valueType==='remoteSelect') {
+        item.renderFormItem = (item,{ type, defaultRender, formItemProps, fieldProps, ...rest },form) => {
+          return (<RemoteSelect url={item?.originProps?.remoteSearchUrl} {...fieldProps} />)
+        }
+      }
       else if (isPlainObj(item.valueEnum) && (item as any).renderTag === true) {
         item.render = (_, record) => {
           const colValue = record[item.dataIndex as string]
@@ -278,7 +283,7 @@ class SearchTable extends Component<IProTableProps, any> {
           item.search = {
             ...(item.search || {}),
             transform: (value) => ({
-              [item.dataIndex]: `${value[0]} ~ ${value[1]}`,
+              [item.dataIndex]: `${value[0]}~${value[1]}`,
             })
           }
         }
@@ -319,7 +324,7 @@ class SearchTable extends Component<IProTableProps, any> {
             //   button.displayConditionField
             // }
 
-            const buttonText = button.buttonType === "enable" ? (record[button.enableField] ? '禁用' : '启用') : button.label
+            const buttonText = button.buttonType === "enable" ? (record[button.enableField] ? button.disabledText : button.enableText) : button.label
             return (
               <Permission code={button.code} hasPermission={window?._utils?.hasPermission}>
                 <a onClick={(e) => {
@@ -371,13 +376,15 @@ class SearchTable extends Component<IProTableProps, any> {
                   } else if (button.buttonType === "editInline") {
                     action?.startEditable?.(record.id);
                   } else if (button.buttonType === "enable") {
+                    const currentIsEnabled = record[button.enableField].toString() === button.enableValue.toString()
                     if (button.needConfirm) {
                       Modal.confirm({
                         content: `确认${buttonText}吗?`,
                         onOk: () => {
                           button.url && window.request(`${button.url}/${record.id}`, 'POST', {
+                            id: record.id,
                             userId: record.id,
-                            [button.enableField]: Number(!record[button.enableField])
+                            [button.enableField]: currentIsEnabled? button.disabledValue: button.enableValue
                           }).then(res => {
                             this.actionRef.current.reload()
                           })

@@ -200,6 +200,12 @@ const NotkidMeta: ComponentMetadata = {
                       isRequired: true
                     },
                     {
+                      name: 'remoteSearchUrl',
+                      title: { label: '远程url', tip: 'dataIndex | 数据字段' },
+                      propType: 'string',
+                      setter: 'StringSetter',
+                    },
+                    {
                       name: 'clickableArray',
                       title: { label: '当为单元格以下值表现为可点击'},
                       propType: 'Array',
@@ -321,6 +327,10 @@ const NotkidMeta: ComponentMetadata = {
                               title: '可点击弹窗表格',
                               value: 'clickableModalTable'
                             },
+                            {
+                              title: '门店远程搜索',
+                              value: 'remoteSelect'
+                            }
                           ]
                         }
                       }
@@ -706,6 +716,42 @@ const NotkidMeta: ComponentMetadata = {
                         }
                       }
                     },
+                    {
+                      name: 'enableValue',
+                      title: { label: '启用传什么值' },
+                      propType: 'string',
+                      setter: {
+                        componentName: 'StringSetter',
+                        initialValue: '1',
+                      }
+                    },
+                    {
+                      name: 'disabledValue',
+                      title: { label: '禁用传什么值' },
+                      propType: 'string',
+                      setter: {
+                        componentName: 'StringSetter',
+                        initialValue: '0',
+                      }
+                    },
+                    {
+                      name: 'enableText',
+                      title: { label: '启用文本名称' },
+                      propType: 'string',
+                      setter: {
+                        componentName: 'StringSetter',
+                        initialValue: '启用',
+                      }
+                    },
+                    {
+                      name: 'disabledText',
+                      title: { label: '禁用文本名称' },
+                      propType: 'string',
+                      setter: {
+                        componentName: 'StringSetter',
+                        initialValue: '停用',
+                      }
+                    },
 
                     {
                       name: 'isConditionDisplay',
@@ -864,6 +910,20 @@ const NotkidMeta: ComponentMetadata = {
                     {
                       name: 'importExcelUrl',
                       title: { label: 'import请求地址' },
+                      propType: 'string',
+                      setter: 'StringSetter',
+                      isRequired: false
+                    },
+                    {
+                      name: 'importExcelField',
+                      title: { label: 'importExcelField' },
+                      propType: 'string',
+                      setter: 'StringSetter',
+                      isRequired: false
+                    },
+                    {
+                      name: 'typeField',
+                      title: { label: '跳转需要确认的字段名称' },
                       propType: 'string',
                       setter: 'StringSetter',
                       isRequired: false
@@ -2036,40 +2096,6 @@ const getColumns = () => {
 
 const getDataSource = () => {
   return [
-    {
-      id: '1',
-      name: '肖战',
-      age: 30,
-      avatar:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Xiao_Zhan_at_the_Weibo_Night_Ceremony_January_11_2020.jpg/1280px-Xiao_Zhan_at_the_Weibo_Night_Ceremony_January_11_2020.jpg',
-      link: 'https://en.wikipedia.org/wiki/Xiao_Zhan',
-      loan: 700000,
-      trade_progress: 17,
-      address: '西湖区湖底公园1号',
-      buttonVisible: {
-        add: true
-      },
-      create_time: '2022-04-21 21:00',
-      status: 'close',
-      type: '1'
-    },
-    {
-      buttonVisible: {
-        add: false
-      },
-      id: '2',
-      name: '王一博',
-      age: 28,
-      avatar:
-        'https://upload.wikimedia.org/wikipedia/commons/9/9a/%E7%8E%8B%E4%B8%80%E5%8D%9A.jpg',
-      link: 'https://en.wikipedia.org/wiki/Wang_Yibo',
-      loan: 600000,
-      trade_progress: 36,
-      address: '滨江区网商路699号',
-      create_time: '2022-04-21 22:00',
-      status: 'running',
-      type: '2'
-    }
   ]
 }
 
