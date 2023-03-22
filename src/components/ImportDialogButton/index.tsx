@@ -2,7 +2,7 @@ import { Button, ConfigProvider, Modal, message } from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
 import React, { Children, ReactNode, useMemo, useRef, useState } from 'react';
 import { request as innerRequest } from '../../request'
-import { defineGetterProperties, isPlainObj } from '../../shared/index'
+import { defineGetterProperties, isPlainObj, toExcel } from '../../shared/index'
 
 
 
@@ -23,7 +23,7 @@ type ImportDialogButtonProps = {
 
 const ImportDialogButton = (props: ImportDialogButtonProps) => {
     const [visible, setVisible] = useState(false)
-    const { downloadExcelUrl, importExcelUrl, valueEnum={}, typeField,importExcelField } = props
+    const { importExcelUrl, valueEnum={}, typeField, } = props
     const value = props[typeField] 
     const showModal = () => {
         setVisible(true)
@@ -37,25 +37,19 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
 
     const url =  valueEnum[value]?.url || ''
 
+    const downloadExcelUrl = valueEnum[value]?.downloadUrl || ''
+
+    const importExcelField = valueEnum[value]?.importExcelField || ''
+
     const handleDownload = () => {
-        request(downloadExcelUrl, {
-            method: 'GET',
+        window.request(downloadExcelUrl, {
+            method: 'post',
+            data: {},
             getResponse: true,
-            data: { "tenantId": "default_tenant", "appId": 1196271598647115800, "userId": "2477", "merchantId": 82, "merchantName": "18770084902商户", "id": 195, "remark": null, "createdTime": 1656986330000, "updatedTime": 1656986330000, "createdBy": 2477, "updatedBy": 2477, "createdByName": "18770084902法人姓名", "updatedByName": "18770084902法人姓名", "bookName": "mtest", "type": 7, "bookId": 195, "responseType": "arraybuffer" }
-        }).then(res => res.blob()).then(file => {
-
-            let eleLink = document.createElement('a')
-            eleLink.download = '1.xls'
-            eleLink.style.display = 'none'
-            // 字符内容转变成blob地址
-            let blob = new Blob([file])
-            eleLink.href = URL.createObjectURL(blob)
-            // 触发点击
-            document.body.appendChild(eleLink)
-            eleLink.click()
-            // 然后移除
-            document.body.removeChild(eleLink)
-
+            responseType: 'arrayBuffer'
+        }).then((res) => {
+            console.log('res', res)
+            toExcel(res.response)
         })
     }
 
@@ -77,9 +71,12 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
                 const value = Object.keys(item).reduce((sum: any, key) => {
                     const column = columns.find((v:any)=>v.label==key)
                     console.log('column',column)
-                    debugger
                     if(column) {
-                        sum[column.prop] = item[key]
+                        if(column.type==='enum') {
+                            sum[column.prop] = column.enum[item[key]]
+                        }else {
+                            sum[column.prop] = item[key]
+                        }
                     }else {
                         sum[key] = item[key]
                     }
@@ -90,7 +87,14 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
             window.request(url, {
                 method: 'POST',
                 data: {
-                    [importExcelField]: result,
+                    id: props.id,
+                    [importExcelField]: result.map((v:any)=> {
+                        return {
+                            ...v,
+                            bookId: sessionStorage.getItem('bookId'),
+                            bookName: sessionStorage.getItem('bookName'),
+                        }
+                    }),
                 }
             }).then((res: any)=> {
                 if(res?.payload?.msg) {

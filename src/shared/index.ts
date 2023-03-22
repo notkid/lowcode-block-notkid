@@ -34,3 +34,21 @@ export const defineGetterProperties = (ref, targetRef: any) => {
 
   return ref
 }
+
+
+export const toExcel = (res) => {
+  res.blob().then(blob => {
+    const fileName = res.headers.get('Content-Disposition').split('=')[1];
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = decodeURI(fileName);
+    document.body.appendChild(a);
+    a.click();
+
+    setTimeout(() => {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }, 1000);
+  });
+}

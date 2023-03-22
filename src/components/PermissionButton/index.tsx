@@ -1,5 +1,6 @@
 import { Button, ConfigProvider, Modal } from 'antd';
 import React, { Children, ReactNode, useRef, useState } from 'react';
+import { toExcel } from '../../shared';
 import { Permission } from '../Permission'
 import Context from '../SearchTable/context';
 
@@ -34,7 +35,13 @@ const PermissionButton = (props: PermissionButtonProps) => {
         } else if (buttonType === 'export') {
             if (window?.request) {
                 window.request(url, {
-                    data: formData
+                    method: 'post',
+                    data: formData,
+                    getResponse: true,
+                    responseType: 'arrayBuffer'
+                }).then((res) =>{
+                  toExcel(res.response)
+        
                 })
             }
         }

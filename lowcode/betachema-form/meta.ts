@@ -7436,6 +7436,34 @@ const BetachemaFormMeta: ComponentMetadata = {
         setter: ['StringSetter', 'CustomSetter',]
       },
       {
+        name: 'needBack',
+        title: { label: '更新后跳转到上一页', tip: 'dataSource | 表格数据' },
+        propType: 'bool',
+        setter:{
+          componentName: 'BoolSetter',
+          initialValue: true
+        } 
+      },
+      {
+        name: 'showEditButton',
+        title: { label: '显示编辑按钮', tip: 'dataSource | 表格数据' },
+        propType: 'bool',
+        setter:{
+          componentName: 'BoolSetter',
+          initialValue: true
+        } 
+      },
+      {
+        name: 'includePath',
+        title: { label: '路径包含bookId', tip: 'dataSource | 表格数据' },
+        setter: ['StringSetter']
+      },
+      {
+        name: 'needCacheName',
+        title: { label: '专门为账套映射', tip: 'dataSource | 表格数据' },
+        setter: ['StringSetter']
+      },
+      {
         name: 'submitUrl',
         title: { label: '提交url', tip: 'dataSource | 表格数据' },
         setter: ['StringSetter', 'CustomSetter',]
@@ -7459,6 +7487,14 @@ const BetachemaFormMeta: ComponentMetadata = {
         setter: 'StringSetter'
       },
       {
+        name: 'addUrl',
+        title: {
+          label: '点击编辑跳转新增地址',
+        },
+        propType: 'string',
+        setter: 'StringSetter'
+      },
+      {
         name: 'modalFormTitle',
         title: {
           label: 'modalFormTitle',
@@ -7474,7 +7510,22 @@ const BetachemaFormMeta: ComponentMetadata = {
         propType: 'string',
         setter: 'StringSetter'
       },
-
+      {
+        name: 'needTransform',
+        title: {
+          label: 'needTransform',
+        },
+        propType: 'string',
+        setter: 'StringSetter'
+      },
+      {
+        name: 'editIsLive',
+        title: {
+          label: 'editIsLive',
+        },
+        propType: 'string',
+        setter: 'StringSetter'
+      },
       {
         name: 'columns',
         title: { label: '表格列', tip: '表格列的配置描述，具体项见下表' },
@@ -7535,6 +7586,10 @@ const BetachemaFormMeta: ComponentMetadata = {
                             {
                               title: '门店远程搜素',
                               value: 'remote'
+                            },
+                            {
+                              title: '供应商',
+                              value: 'supplier'
                             },
                             {
                               title: '操作',
@@ -7631,6 +7686,14 @@ const BetachemaFormMeta: ComponentMetadata = {
                             {
                               title: '级联选择器',
                               value: 'cascader'
+                            },
+                            {
+                              title: '远程单选',
+                              value: 'singleRemote'
+                            },
+                            {
+                              title: '单据类型',
+                              value: 'billType'
                             }
                           ]
                         }

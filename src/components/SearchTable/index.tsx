@@ -7,7 +7,7 @@ import {
   FooterToolbar
 } from '@ant-design/pro-components'
 import type { ProFormInstance } from '@ant-design/pro-components'
-import { Button, TablePaginationConfig, Tag, ConfigProvider, Modal } from 'antd'
+import { Button, TablePaginationConfig, Tag, ConfigProvider, Modal, message } from 'antd'
 import zhCNIntl from 'antd/es/locale/zh_CN'
 import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from '../../shared/index'
@@ -16,6 +16,7 @@ import { ImportDialogButton } from '../ImportDialogButton'
 import { Permission } from '../Permission/index'
 import Context from './context'
 import { RemoteSelect } from '../SchemaForm/components/RemoteSelect'
+import { SingleSelect } from '../SchemaForm/components/SingleSelect'
 
 interface IValueEnum {
   text: string
@@ -127,12 +128,17 @@ class SearchTable extends Component<IProTableProps, any> {
      else if(record.type == 4) {
       path = '/wp-kingdee/data-mapping-supplier'
      }
-     else if(record.type == 6) {
+     else if(record.type == 5) {
       path = '/wp-kingdee/data-mapping-classify'
-     }else if(record.type == 7) {
+     }else if(record.type == 6) {
       path = '/wp-kingdee/data-mapping-bank'
-     }else {
+     }else if(record.type == 7) {
       path = '/wp-kingdee/data-mapping-tax'
+    }
+    else if(record.type == 8) {
+      path = '/wp-kingdee/data-mapping-customer'
+    } else if(record.type == 9) {
+      path = '/wp-kingdee/data-mapping-department'
     }
     history.push(path, {
       query: { id: record.id }
@@ -210,7 +216,12 @@ class SearchTable extends Component<IProTableProps, any> {
             ...query,
           },
         }, {})
-        let data = msg?.[dataPath]
+        const newDataPath = dataPath.split('.').filter(v=>v)
+        let data = newDataPath.reduce((sum: any, item: any) => {
+          sum = sum[item]
+          return sum
+        },msg)
+        console.log('data', data)
         if (treeRenderField) {
           data = data.map(item => {
             return {
@@ -261,7 +272,7 @@ class SearchTable extends Component<IProTableProps, any> {
 
       } else if(item.valueType==='remoteSelect') {
         item.renderFormItem = (item,{ type, defaultRender, formItemProps, fieldProps, ...rest },form) => {
-          return (<RemoteSelect url={item?.originProps?.remoteSearchUrl} {...fieldProps} />)
+          return (<SingleSelect url={item?.originProps?.remoteSearchUrl} {...fieldProps} />)
         }
       }
       else if (isPlainObj(item.valueEnum) && (item as any).renderTag === true) {
@@ -284,6 +295,14 @@ class SearchTable extends Component<IProTableProps, any> {
             ...(item.search || {}),
             transform: (value) => ({
               [item.dataIndex]: `${value[0]}~${value[1]}`,
+            })
+          }
+        } else if(item.bizFormatProps === 'xny-dateFromTo') {
+          item.search = {
+            ...(item.search || {}),
+            transform: (value) => ({
+              [item.dataIndex+'From']: value[0]+ ' 00:00:00',
+              [item.dataIndex+'To']: value[1]+ ' 23:59:59',
             })
           }
         }
@@ -310,7 +329,7 @@ class SearchTable extends Component<IProTableProps, any> {
                 if (exp?.conditionExpressionType === 'equals') {
                   return value.toString() == exp.conditionExpressionValue
                 } else if (exp?.conditionExpressionType === 'notEquals') {
-                  return !value.toString() == exp.conditionExpressionValue
+                  return value.toString() != exp.conditionExpressionValue
                 }
               })
             }
@@ -339,22 +358,33 @@ class SearchTable extends Component<IProTableProps, any> {
                     console.log(this, 'asdfasdfasdfasthis')
                     url && window._utils?.History?.push(`${url}`)
                   } else if (button.buttonType === "request") {
+                    let url = button.url
+                    let method = 'post'
+
+                    if(url.method) {
+                      method = url.method
+                    }
+                    if(url.url) {
+                      url = url.url
+                    }
                     if (button.needConfirm) {
                       Modal.confirm({
                         content: `确认${button.label}吗?`,
                         onOk: () => {
-                          let { url } = button
                           if (url?.indexOf('{') > 0) {
                             url = url.replaceAll(/{(\w+)}/g, (match, $1) => {
                               return record[$1]
                             })
                           }
                           if(button?.paramsSendWay === 'object') {
-                            button.url && window.request(url, record).then(res => {
+                            url && window.request(url, {
+                              method,
+                              data: record
+                            }).then(res => {
                               this.actionRef.current.reload()
                             })
                           }else {
-                            button.url && window.request(`${url}/${record.id}`).then(res => {
+                            url && window.request(`${url}/${record.id}`,{method}).then(res => {
                               this.actionRef.current.reload()
                             })
                           }
@@ -363,11 +393,14 @@ class SearchTable extends Component<IProTableProps, any> {
                       })
                     } else {
                       if(button?.paramsSendWay === 'object') {
-                        button.url && window.request(button.url, record).then(res => {
+                        url && window.request(url, {
+                          method,
+                          data: record,
+                        }).then(res => {
                           this.actionRef.current.reload()
                         })
                       }else {
-                        button.url && window.request(`${button.url}/${record.id}`).then(res => {
+                        url && window.request(`${url}/${record.id}`,{method}).then(res => {
                           this.actionRef.current.reload()
                         })
                       }
@@ -381,10 +414,13 @@ class SearchTable extends Component<IProTableProps, any> {
                       Modal.confirm({
                         content: `确认${buttonText}吗?`,
                         onOk: () => {
-                          button.url && window.request(`${button.url}/${record.id}`, 'POST', {
-                            id: record.id,
-                            userId: record.id,
-                            [button.enableField]: currentIsEnabled? button.disabledValue: button.enableValue
+                          button.url && window.request(`${button.url}`, {
+                            method: 'post',
+                            data: {
+                              id: record.id,
+                              userId: record.id,
+                              [button.enableField]: currentIsEnabled? button.disabledValue: button.enableValue
+                            }
                           }).then(res => {
                             this.actionRef.current.reload()
                           })
@@ -490,6 +526,11 @@ class SearchTable extends Component<IProTableProps, any> {
                 return window.request(saveUrl,{
                   method: 'POST',
                   data: row
+                }).then(res=> {
+                  if(res.isSuccess) {
+                    this.actionRef?.current?.reload();
+                    message.success('保存成功')
+                  }
                 })
               }
               return Promise.reject()

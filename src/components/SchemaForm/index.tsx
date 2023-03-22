@@ -8,7 +8,7 @@ import {
   FooterToolbar
 } from '@ant-design/pro-components'
 import type { ProFormInstance } from '@ant-design/pro-components'
-import { Button, DatePicker, Select, TablePaginationConfig } from 'antd'
+import { Button, DatePicker, message, Select, TablePaginationConfig } from 'antd'
 import { Tag, ConfigProvider, Modal } from 'antd'
 import zhCNIntl from 'antd/es/locale/zh_CN'
 import { request as innerRequest } from '../../request'
@@ -16,6 +16,9 @@ import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from '../../shared/index'
 import { FormProps } from 'rc-field-form/lib/Form'
 import { RemoteSelect } from './components/RemoteSelect'
+import {SupplierSelect} from './components/SupplierSelect'
+import {SingleSelect} from './components/SingleSelect'
+import {BillTypeSelect} from './components/BillTypeSelect'
 import { Permission } from '../Permission'
 import { PermissionButton } from '../PermissionButton'
 
@@ -50,6 +53,11 @@ export type IBetaSchemaFormProps = React.ComponentProps<typeof OriginalBetaSchem
   modalFormButtonText?: string
   width?: string
   editPermissionCode?: string
+  includePath?:string
+  needCacheName?:string
+  needTransform?:string
+  addUrl?: string
+  editIsLive?: string
 }
 
 const intlMap = {
@@ -99,9 +107,9 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
   componentDidMount() {
     // 把操作方法挂载到 class instance 上，可通过 this.$ 调用
     defineGetterProperties(this, [this.actionRef, this.formRef])
-    const { mode, detailUrl } = this.props
+    const { mode, detailUrl, includePath, needCacheName, needTransform } = this.props
     if (mode === 'edit' || mode === 'view') {
-      let method = ''
+      let method = 'post'
       let url = ''
       if (detailUrl?.method) {
         method = detailUrl.method
@@ -110,16 +118,39 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
         url = detailUrl?.url
       }
       if (window?.request) {
-        window?.request(`${url}${(window?._utils?.params?.id)?('/'+window?._utils?.params?.id):''}`, {
+        window?.request(`${url}${(window?._utils?.params?.id)?('/'+window?._utils?.params?.id):(includePath?sessionStorage.getItem('bookId'):'')}`, {
           method,
           headers: {
             'Content-Type': 'application/json',
           },
         }, {}).then((res: any) => {
-          this.setState({ defaultValue: res.payload })
+          if(needTransform) {
+            this.formRef?.current?.setFieldsValue(Object.keys(res.payload).reduce((acc, val) => {
+              if(Array.isArray(acc[val])) {
+                acc[val] = acc[val].map(v=>{
+                  return {
+                    ...v,
+                    label: v.businessName,
+                    value: v.businessCode
+                  }
+                })
+              }
+              return acc
+            }, res.payload))
+          }else {
+            this.formRef?.current?.setFieldsValue(res.payload)
+          }
+
         })
       }
+    }else if(needCacheName) {
+      this.formRef?.current?.setFieldsValue({
+        name: sessionStorage.getItem('bookName'),
+        consumerName: sessionStorage.getItem('consumerName'),
+        consumerId: sessionStorage.getItem('consumerId')
+      })
     }
+
 
   }
 
@@ -145,19 +176,36 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
   }
 
   onFinish = (values: any) => {
-    const { submitUrl } = this.props
-    return window.request(submitUrl, {
+    const id = this.formRef.current.getFieldValue('id')
+    const { submitUrl, addUrl, needBack } = this.props
+    return window.request(id?submitUrl:(addUrl||submitUrl), {
       method: 'POST',
       data: values
+    }).then((res: any)=>{
+      if(res.code=='0') {
+        if(needBack) {
+          window?._utils?.goBack()
+        }
+        message.success('保存成功')
+      }else {
+        message.error(res?.msg)
+      }
+
     })
   }
 
-  handleEdit = () => {
+  handleEdit = (item) => {
     const history = window?._utils?.History
     const {editUrl} = this.props
-    console.log(history, editUrl)
-    if(editUrl && history?.push) {
-      history.push(editUrl)
+    let url = editUrl
+    if (url?.indexOf('{') > 0) {
+      url = url.replace(/{(\w+)}/, (match, $1) => {
+        return window?._utils?.params?.id || ''
+      })
+    }
+    console.log(history, url)
+    if(url && history?.push) {
+      history.push(url)
     }
 
   }
@@ -183,6 +231,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
       width,
       editPermissionCode,
       editUrl,
+      showEditButton=true,
     } = this.props
 
     const { selectedRowKeys, collapsed } = this.state
@@ -256,6 +305,39 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
           renderFormItem: (schema, config, form) => {
             return (
               <RemoteSelect url={item.url} />
+            )
+          }
+        }
+      }
+      if (item.valueType === 'singleRemote') {
+        return {
+          ...item,
+          // renderFormItem: () => <DatePicker.RangePicker />,
+          renderFormItem: (schema, config, form) => {
+            return (
+              <SingleSelect url={item.url} />
+            )
+          }
+        }
+      }
+      if (item.valueType === 'supplier') {
+        return {
+          ...item,
+          // renderFormItem: () => <DatePicker.RangePicker />,
+          renderFormItem: (schema, config, form) => {
+            return (
+              <SupplierSelect url={item.url} />
+            )
+          }
+        }
+      }
+      if(item.valueType === 'billType') {
+        return {
+          ...item,
+          // renderFormItem: () => <DatePicker.RangePicker />,
+          renderFormItem: (schema, config, form) => {
+            return (
+              <BillTypeSelect {...schema} {...config} {...form} />
             )
           }
         }
@@ -386,10 +468,9 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
               },
             }}
           />
-          {mode==='view' && (
+          {(mode==='view' && showEditButton)&& (
             <PermissionButton buttonText='编辑' url={editUrl} buttonType="url" code={editPermissionCode} >
             </PermissionButton>
-           
           )}
 
         </div>

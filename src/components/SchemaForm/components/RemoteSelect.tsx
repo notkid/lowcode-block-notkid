@@ -64,6 +64,7 @@ const RemoteSelect: React.FC = (props: any) => {
                 isPage: false,
                 tenantId:"default_tenant",
                 type: 1,
+                isEnabled: 1,
                 storeName: username
             }
         })

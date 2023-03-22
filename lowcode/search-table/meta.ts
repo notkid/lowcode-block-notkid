@@ -348,7 +348,12 @@ const NotkidMeta: ComponentMetadata = {
                             {
                               title: '犀鸟云日期区间',
                               value: 'xny-dateRange'
-                            },]
+                            },
+                            {
+                              title: '犀鸟云日期双值',
+                              value: 'xny-dateFromTo'
+                            },
+                          ]
                         }
                       }
                     },
@@ -680,10 +685,17 @@ const NotkidMeta: ComponentMetadata = {
                       isRequired: true
                     },
                     {
+                      name: 'url',
+                      title: { label: '请求地址' },
+                      propType: 'string',
+                      setter: ['StringSetter', 'CustomSetter'],
+                      isRequired: true
+                    },
+                    {
                       name: 'buttonType',
                       title: { label: '按钮类型', tip: 'valueType | 数据类型' },
                       propType: 'string',
-                      isRequired: true,
+                      isRequired: false,
                       setter: {
                         componentName: 'SelectSetter',
                         props: {
@@ -893,13 +905,7 @@ const NotkidMeta: ComponentMetadata = {
                           }
                         }
                     },
-                    {
-                      name: 'url',
-                      title: { label: '请求地址' },
-                      propType: 'string',
-                      setter: 'StringSetter',
-                      isRequired: false
-                    },
+                   
                     {
                       name: 'downloadExcelUrl',
                       title: { label: 'download请求地址' },
@@ -2108,7 +2114,6 @@ export const snippets: Snippet[] = [
       componentName: 'SearchTable',
       props: {
         cardBordered: true,
-        dataSource: getDataSource(),
         columns: [
           ...getColumns(),
           // {
