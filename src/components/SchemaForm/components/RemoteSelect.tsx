@@ -56,7 +56,6 @@ const RemoteSelect: React.FC = (props: any) => {
     const [value, setValue] = useState<UserValue[]>([]);
     const { url, onChange } = props
     const fetchUserList = (username: string): Promise<UserValue[]> => {
-        debugger
         return window?.request(url, {
             method: 'POST',
             data: {

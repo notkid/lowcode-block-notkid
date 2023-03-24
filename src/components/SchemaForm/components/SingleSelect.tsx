@@ -59,6 +59,7 @@ const SingleSelect: React.FC = (props: any) => {
             value={value}
             placeholder="请输入名称搜索"
             filterOption={true}
+            optionFilterProp="label"
             notFoundContent={fetching ? <Spin size="small" /> : null}
             {...props}
             clearable={true}

@@ -71,10 +71,8 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
     selectedRowKeys: (this.props.rowSelection as any)?.selectedRowKeys ?? [],
     selectedRows: [],
     defaultValue: {},
-    collapsed:
-      this.props.search === false
-        ? undefined
-        : this.props.search?.defaultCollapsed // 之前设置的this.props.search.collapsed会失效，但问题不大
+    open: false,
+    collapsed: true
   }
 
   actionRef = createRef<ActionType>()
@@ -107,6 +105,12 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
   componentDidMount() {
     // 把操作方法挂载到 class instance 上，可通过 this.$ 调用
     defineGetterProperties(this, [this.actionRef, this.formRef])
+  
+    this.getInitData()
+
+  }
+
+  getInitData() {
     const { mode, detailUrl, includePath, needCacheName, needTransform } = this.props
     if (mode === 'edit' || mode === 'view') {
       let method = 'post'
@@ -150,8 +154,6 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
         consumerId: sessionStorage.getItem('consumerId')
       })
     }
-
-
   }
 
   async deleteItem(item, dataUrl) {
@@ -186,6 +188,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
         if(needBack) {
           window?._utils?.goBack()
         }
+        this.setState({open: false})
         message.success('保存成功')
       }else {
         message.error(res?.msg)
@@ -234,7 +237,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
       showEditButton=true,
     } = this.props
 
-    const { selectedRowKeys, collapsed } = this.state
+    const { selectedRowKeys, collapsed, open } = this.state
 
     let finalRequest = request
 
@@ -351,6 +354,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
+        key: 'option',
         render: (text, record) => [
           // alert(extraButtons);
           ...extraButtons.filter(v => v).map((button: any) => {
@@ -441,7 +445,11 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
           }}
         >  <OriginalBetaSchemaForm
             trigger={
-              <Button type="primary">
+              <Button type="primary" onClick={() => {
+                this.setState({
+                  open: true
+                })
+              }}>
                 {modalFormButtonText}
               </Button>
             }
@@ -457,6 +465,12 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
             // form={{ onValuesChange }}
             request={finalRequest}
             onFinish={this.onFinish}
+            destroyOnClose
+            open={open}
+            onOpenChange={value=> {
+              this.setState({open: value});
+              this.getInitData();
+            }}
             submitter={{
               render: (_: any, dom: any) => {
 

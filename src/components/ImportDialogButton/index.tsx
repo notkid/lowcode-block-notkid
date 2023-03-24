@@ -56,7 +56,6 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
     const onUploadAreaDrop =(e) => {
         e.preventDefault()
         window?._utils?.parseExcel(e.dataTransfer.files[0], [], res => {
-            debugger
 
         })
     }
@@ -97,9 +96,7 @@ const ImportDialogButton = (props: ImportDialogButtonProps) => {
                     }),
                 }
             }).then((res: any)=> {
-                if(res?.payload?.msg) {
-                    message.error(res?.payload?.msg)
-                }else {
+                if(res?.code==='0') {
                     message.success('导入成功')
                     handleCancel()
                 }

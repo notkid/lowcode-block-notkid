@@ -63,10 +63,29 @@ const NotkidMeta: ComponentMetadata = {
             setter: 'StringSetter'
           },
           {
+            name: 'totalFieldName',
+            title: { label: 'total字段名称', tip: 'dataSource | 表格数据' },
+            propType: 'string',
+            setter: 'StringSetter'
+          },
+          {
             name: 'sizeName',
             title: { label: 'size字段名称', tip: 'dataSource | 表格数据' },
             propType: 'string',
             setter: 'StringSetter'
+          },
+          {
+            name: 'headerButtons',
+            title: { label: '按钮插槽', tip: 'dataSource | 表格数据' },
+            propType: 'func',
+            setter:   [{
+              componentName: 'SlotSetter',
+              title: '按钮插槽',
+              initialValue: {
+                type: 'JSSlot',
+                value: []
+              }
+            }]
           },
           {
             name: 'treeRenderField',
@@ -1628,13 +1647,14 @@ const NotkidMeta: ComponentMetadata = {
           }
         ]
       },
+
       {
         title: '扩展',
         display: 'block',
         type: 'group',
         items: [
           {
-            name: 'toolBarRender',
+            name: 'toolBarRenderCustomer',
             title: { label: '工具栏操作', tip: 'toolbar | 工具栏操作' },
             propType: 'func',
             setter: [

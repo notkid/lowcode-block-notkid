@@ -8,7 +8,7 @@ import {
 } from '@ant-design/pro-components'
 import type { ProFormInstance } from '@ant-design/pro-components'
 import { Button, TablePaginationConfig, Tag, ConfigProvider, Modal, message } from 'antd'
-import zhCNIntl from 'antd/es/locale/zh_CN'
+import zhCNIntl from 'antd/es/locale/zh_CN';
 import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from '../../shared/index'
 import { FormProps } from 'rc-field-form/lib/Form'
@@ -17,6 +17,8 @@ import { Permission } from '../Permission/index'
 import Context from './context'
 import { RemoteSelect } from '../SchemaForm/components/RemoteSelect'
 import { SingleSelect } from '../SchemaForm/components/SingleSelect'
+
+console.log('zhCn', zhCNIntl)
 
 interface IValueEnum {
   text: string
@@ -37,6 +39,8 @@ export type IProTableProps = React.ComponentProps<typeof OriginalProTable> & {
   dataUrl?: string
   editUrl?: string
   showNoColumn?: boolean
+  headerButtons: any
+  totalFieldName: any
 }
 
 const intlMap = {
@@ -172,7 +176,9 @@ class SearchTable extends Component<IProTableProps, any> {
       handleClickCell,
       showNoColumn = false,
       pageName='pageNo',
-      sizeName='pageSize'
+      sizeName='pageSize',
+      headerButtons,
+      totalFieldName
     } = this.props
 
     const { selectedRowKeys, collapsed, modalVisible } = this.state
@@ -231,14 +237,26 @@ class SearchTable extends Component<IProTableProps, any> {
           })
         }
 
+        let total = ''
+        if(totalFieldName) {
+          total = msg?.total
+        } else {
+          total = msg?.payload?.totalElements
+        }
+
         return {
-          data,
+          data: data?data.map((v: any)=> {
+            if(typeof v.gift === 'number') {
+              v.gift = v.gift.toString()
+            }
+            return v
+          }): [],
           // success 请返回 true，
           // 不然 table 会停止解析数据，即使有数据
           // success: msg.code === '0',
           success: true,
           // 不传会使用 data 的长度，如果是分页一定要传
-          total: msg.payload?.totalElements,
+          total:  total,
         };
       }
     }
@@ -308,11 +326,13 @@ class SearchTable extends Component<IProTableProps, any> {
         }
       }
     })
+    let newColumns = [...columns]
     if (showOption) {
       const options = {
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
+        key: 'option',
         render: (text, record, _, action) => [
           // alert(extraButtons);
           ...extraButtons.filter(v => {
@@ -473,19 +493,19 @@ class SearchTable extends Component<IProTableProps, any> {
           </a>,
         ],
       }
-      columns.push(options)
+      newColumns= [...newColumns, options]
     }
     if(showNoColumn) {
-      columns.unshift({
-          title: '序号',
-          dataIndex: 'no',
-          valueType: 'text',
-          hideInSearch: true,
-          hideInForm: true,
-          renderText:(text, record, index, action) => {
-            return index+1
-          },
-      })
+      newColumns = [{
+        title: '序号',
+        dataIndex: 'no',
+        valueType: 'text',
+        hideInSearch: true,
+        hideInForm: true,
+        renderText:(text, record, index, action) => {
+          return index+1
+        },
+    },...newColumns]
     }
 
     const pagination = this.props.pagination as TablePaginationConfig
@@ -505,16 +525,16 @@ class SearchTable extends Component<IProTableProps, any> {
     //     return true;
     //   }
     // }
-    // if (treeRenderField) {
-    //   expandable = {
-    //     childrenColumnName: treeRenderField,
-    //     rowExpandable(record) {
-    //       return !!record?.[treeRenderField]?.length;
-    //     },
-    //   }
-    // }
+    let expandable = {}
+    if (treeRenderField) {
+      expandable = {
+        rowExpandable(record: any) {
+          return !!record?.[treeRenderField]?.length;
+        },
+      }
+    }
     return (
-      <ConfigProvider locale={intlMap[intl || 'zhCNIntl']}>
+      <ConfigProvider locale={intlMap['zhCNIntl']}>
         <Context.Provider value= {{actionRef:this.actionRef, formRef: this.formRef}}>
         <OriginalProTable
           {...this.props}
@@ -527,7 +547,7 @@ class SearchTable extends Component<IProTableProps, any> {
                   method: 'POST',
                   data: row
                 }).then(res=> {
-                  if(res.isSuccess) {
+                  if(res?.payload?.isSuccess) {
                     this.actionRef?.current?.reload();
                     message.success('保存成功')
                   }
@@ -542,6 +562,12 @@ class SearchTable extends Component<IProTableProps, any> {
               : {
                 ...this.props.search,
                 collapsed,
+                optionRender: (searchConfig, formProps, dom) => [
+                  ...dom.reverse(),
+                  <div style={{display: "flex",alignItems: "center"}}>
+                    {headerButtons}
+                  </div>
+                ],
                 onCollapse: () => {
                   if (this.props.search === false) return
                   this.setState({
@@ -567,8 +593,8 @@ class SearchTable extends Component<IProTableProps, any> {
               }
               : false
           }
-          // expandable={expandable}
-          columns={columns}
+          expandable={expandable}
+          columns={newColumns}
           actionRef={this.actionRef}
           formRef={this.formRef}
           form={{ onValuesChange }}
