@@ -556,9 +556,10 @@ class SearchTable extends Component<IProTableProps, any> {
                   data: row
                 }).then(res=> {
                   if(res?.payload?.isSuccess) {
-                    this.actionRef?.current?.reload();
+        
                     message.success('保存成功')
                   }
+                  this.actionRef?.current?.reload();
                 })
               }
               return Promise.reject()
