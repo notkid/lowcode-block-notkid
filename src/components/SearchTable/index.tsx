@@ -4,10 +4,11 @@ import {
   ProTable as OriginalProTable,
   ActionType,
   ProColumnType,
-  FooterToolbar
+  FooterToolbar,
+  EditableFormInstance
 } from '@ant-design/pro-components'
 import type { ProFormInstance } from '@ant-design/pro-components'
-import { Button, TablePaginationConfig, Tag, ConfigProvider, Modal, message } from 'antd'
+import { Button, TablePaginationConfig, Tag, ConfigProvider, Modal, message, Form } from 'antd'
 import zhCNIntl from 'antd/es/locale/zh_CN';
 import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from '../../shared/index'
@@ -57,7 +58,8 @@ class SearchTable extends Component<IProTableProps, any> {
       this.props.search === false
         ? undefined
         : this.props.search?.defaultCollapsed, // 之前设置的this.props.search.collapsed会失效，但问题不大
-    modalVisible: false
+    modalVisible: false,
+    editForm: Form.create()
   }
 
   actionRef = createRef<ActionType>()
@@ -178,10 +180,11 @@ class SearchTable extends Component<IProTableProps, any> {
       pageName='pageNo',
       sizeName='pageSize',
       headerButtons,
-      totalFieldName
+      totalFieldName,
+
     } = this.props
 
-    const { selectedRowKeys, collapsed, modalVisible } = this.state
+    const { selectedRowKeys, collapsed, modalVisible, editForm } = this.state
 
     let finalRequest = request
 
@@ -534,7 +537,7 @@ class SearchTable extends Component<IProTableProps, any> {
       }
     }
     return (
-      <ConfigProvider locale={intlMap['zhCNIntl']}>
+      <ConfigProvider locale={zhCNIntl}>
         <Context.Provider value= {{actionRef:this.actionRef, formRef: this.formRef}}>
         <OriginalProTable
           {...this.props}
@@ -554,7 +557,7 @@ class SearchTable extends Component<IProTableProps, any> {
                 })
               }
               return Promise.reject()
-            }
+            },
           }}
           search={
             typeof this.props.search === 'boolean'

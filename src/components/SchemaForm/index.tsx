@@ -153,6 +153,13 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
         consumerName: sessionStorage.getItem('consumerName'),
         consumerId: sessionStorage.getItem('consumerId')
       })
+      this.setState({
+        defaultValue: {
+          name: sessionStorage.getItem('bookName'),
+          consumerName: sessionStorage.getItem('consumerName'),
+          consumerId: sessionStorage.getItem('consumerId')
+        }
+      })
     }
   }
 
@@ -227,7 +234,6 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
       extraButtons = [],
       layout = 'inline',
       layoutType = "ProForm",
-      defaultValue,
       mode,
       modalFormTitle,
       modalFormButtonText,
@@ -237,7 +243,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
       showEditButton=true,
     } = this.props
 
-    const { selectedRowKeys, collapsed, open } = this.state
+    const { selectedRowKeys, collapsed, open,       defaultValue, } = this.state
 
     let finalRequest = request
 
@@ -461,6 +467,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
             columns={newColumns}
             actionRef={this.actionRef}
             defaultValue={defaultValue}
+            initialValues={defaultValue}
             formRef={this.formRef}
             // form={{ onValuesChange }}
             request={finalRequest}

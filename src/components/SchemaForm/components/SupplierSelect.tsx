@@ -32,10 +32,10 @@ const SupplierSelect: React.FC = (props: any) => {
             .then((data: any) => {
                 return data?.payload?.content?.map(
                     (v: any) => ({
-                        label: v.supplierName,
-                        value: v.supplierCode,
-                        businessName: v.businessName,
-                        businessCode: v.businessCode,
+                        label: v.kdSupplierName,
+                        value: v.kdSupplierCode,
+                        businessName: v.kdSupplierName,
+                        businessCode: v.kdSupplierCode,
                     }),
                 )
             }
