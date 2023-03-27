@@ -541,6 +541,11 @@ class SearchTable extends Component<IProTableProps, any> {
         <Context.Provider value= {{actionRef:this.actionRef, formRef: this.formRef}}>
         <OriginalProTable
           {...this.props}
+          pagination={{
+              showTotal: total => `共${total}条`,
+              showQuickJumper: true,
+              showSizeChanger: true
+          }}
           editable={{
             type: 'single',
             onSave: (key: any, row: any) => {
