@@ -69,6 +69,12 @@ const NotkidMeta: ComponentMetadata = {
             setter: 'StringSetter'
           },
           {
+            name: 'tableHeight',
+            title: { label: '表格高度', tip: 'dataSource | 表格数据' },
+            propType: 'number',
+            setter: 'NumberSetter'
+          },
+          {
             name: 'sizeName',
             title: { label: 'size字段名称', tip: 'dataSource | 表格数据' },
             propType: 'string',
@@ -1983,7 +1989,8 @@ const NotkidMeta: ComponentMetadata = {
               label: {
                 type: 'i18n',
                 'en-US': 'language',
-                'zh-CN': '语言'
+                'zh-CN': '语言',
+                'id-ID': '印尼'
               },
               tip: '支持中文和英文'
             },
@@ -1999,6 +2006,10 @@ const NotkidMeta: ComponentMetadata = {
                   {
                     title: 'enUS',
                     value: 'enUSIntl'
+                  },
+                  {
+                    title: '印尼',
+                    value: 'idIDIntl'
                   }
                 ]
               }

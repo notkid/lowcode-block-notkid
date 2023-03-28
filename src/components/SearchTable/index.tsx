@@ -9,8 +9,6 @@ import {
 } from '@ant-design/pro-components'
 import type { ProFormInstance } from '@ant-design/pro-components'
 import { Button, TablePaginationConfig, Tag, ConfigProvider, Modal, message, Form } from 'antd'
-import zhCNIntl from 'antd/es/locale/zh_CN';
-import enUSIntl from 'antd/es/locale/en_US'
 import { defineGetterProperties, isPlainObj } from '../../shared/index'
 import { FormProps } from 'rc-field-form/lib/Form'
 import { ImportDialogButton } from '../ImportDialogButton'
@@ -18,8 +16,9 @@ import { Permission } from '../Permission/index'
 import Context from './context'
 import { RemoteSelect } from '../SchemaForm/components/RemoteSelect'
 import { SingleSelect } from '../SchemaForm/components/SingleSelect'
+import FormatMessage from '../FormatMessage/index'
+import intlMap from '../../locale/index'
 
-console.log('zhCn', zhCNIntl)
 
 interface IValueEnum {
   text: string
@@ -42,11 +41,6 @@ export type IProTableProps = React.ComponentProps<typeof OriginalProTable> & {
   showNoColumn?: boolean
   headerButtons: any
   totalFieldName: any
-}
-
-const intlMap = {
-  zhCNIntl,
-  enUSIntl
 }
 
 class SearchTable extends Component<IProTableProps, any> {
@@ -181,7 +175,7 @@ class SearchTable extends Component<IProTableProps, any> {
       sizeName='pageSize',
       headerButtons,
       totalFieldName,
-
+      tableHeight = 400
     } = this.props
 
     const { selectedRowKeys, collapsed, modalVisible, editForm } = this.state
@@ -332,7 +326,7 @@ class SearchTable extends Component<IProTableProps, any> {
     let newColumns = [...columns]
     if (showOption) {
       const options = {
-        title: '操作',
+        title:  <FormatMessage id="operation" />,
         dataIndex: 'option',
         valueType: 'option',
         key: 'option',
@@ -500,7 +494,7 @@ class SearchTable extends Component<IProTableProps, any> {
     }
     if(showNoColumn) {
       newColumns = [{
-        title: '序号',
+        title: <FormatMessage id="序号"/>,
         dataIndex: 'no',
         valueType: 'text',
         hideInSearch: true,
@@ -537,10 +531,11 @@ class SearchTable extends Component<IProTableProps, any> {
       }
     }
     return (
-      <ConfigProvider locale={zhCNIntl}>
+      <ConfigProvider locale={intl?intlMap[intl]:intlMap.zhCNIntl}>
         <Context.Provider value= {{actionRef:this.actionRef, formRef: this.formRef}}>
         <OriginalProTable
           {...this.props}
+          scroll={{y: tableHeight}}
           pagination={{
               showTotal: total => `共${total}条`,
               showQuickJumper: true,

@@ -35,6 +35,18 @@ export const defineGetterProperties = (ref, targetRef: any) => {
   return ref
 }
 
+export const getValueByPath = (obj: any, path: any) => {
+  const value = path.split('.').filter((v:any)=>v).reduce((sum: any,item: any) => {
+    if(sum === undefined) {
+      return sum
+    }
+
+    sum = sum[item]
+    return sum
+  }, obj)
+  return value
+}
+
 
 export const toExcel = (res) => {
   res.blob().then(blob => {

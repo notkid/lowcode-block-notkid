@@ -21,6 +21,7 @@ import {SingleSelect} from './components/SingleSelect'
 import {BillTypeSelect} from './components/BillTypeSelect'
 import { Permission } from '../Permission'
 import { PermissionButton } from '../PermissionButton'
+import Context from '../SearchTable/context';
 
 let request = window.request || innerRequest
 
@@ -184,7 +185,8 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
     }, {})
   }
 
-  onFinish = (values: any) => {
+  onFinish = (values: any, data: any) => {
+    const {actionRef} = data|| {}
     const id = this.formRef.current.getFieldValue('id')
     const { submitUrl, addUrl, needBack } = this.props
     return window.request(id?submitUrl:(addUrl||submitUrl), {
@@ -197,6 +199,7 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
         }
         this.setState({open: false})
         message.success('保存成功')
+        actionRef?.current?.reload()
       }else {
         message.error(res?.msg)
       }
@@ -442,59 +445,69 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
 
     return (
       <ConfigProvider locale={intlMap[intl || 'zhCNIntl']}>
-        <div
-          style={{
-            // margin: 24,
-            padding: '20px',
-            width: width|| '100%',
-            backgroundColor: '#fff'
-          }}
-        >  <OriginalBetaSchemaForm
-            trigger={
-              <Button type="primary" onClick={() => {
-                this.setState({
-                  open: true
-                })
-              }}>
-                {modalFormButtonText}
-              </Button>
-            }
-            title={modalFormTitle}
-            layout={layout}
-            disabled={mode === 'view'}
-            layoutType={layoutType}
-            // {...this.props}
-            columns={newColumns}
-            actionRef={this.actionRef}
-            defaultValue={defaultValue}
-            initialValues={defaultValue}
-            formRef={this.formRef}
-            // form={{ onValuesChange }}
-            request={finalRequest}
-            onFinish={this.onFinish}
-            destroyOnClose
-            open={open}
-            onOpenChange={value=> {
-              this.setState({open: value});
-              this.getInitData();
-            }}
-            submitter={{
-              render: (_: any, dom: any) => {
-
-                if (mode === 'view') {
-                  return null
-                } else {
-                  return dom
+         <Context.Consumer>
+            {
+                value => {
+                    return (
+                      <div
+                      style={{
+                        // margin: 24,
+                        padding: layoutType==='ModalForm'? '0px':'20px',
+                        width: width|| '100%',
+                        backgroundColor: '#fff',
+                        ...(layoutType==='ModalForm'?{display: 'flex', alignItems: 'center',justifyContent: 'center'}: {})
+                      }}
+                    >  <OriginalBetaSchemaForm
+                        trigger={
+                          <Button type="primary" onClick={() => {
+                            this.setState({
+                              open: true
+                            })
+                          }}>
+                            {modalFormButtonText}
+                          </Button>
+                        }
+                        title={modalFormTitle}
+                        layout={layout}
+                        disabled={mode === 'view'}
+                        layoutType={layoutType}
+                        // {...this.props}
+                        columns={newColumns}
+                        actionRef={this.actionRef}
+                        defaultValue={defaultValue}
+                        initialValues={defaultValue}
+                        formRef={this.formRef}
+                        // form={{ onValuesChange }}
+                        request={finalRequest}
+                        onFinish={(values) => this.onFinish(values, value)}
+                        destroyOnClose
+                        open={open}
+                        onOpenChange={value=> {
+                          this.setState({open: value});
+                          this.getInitData();
+                        }}
+                        submitter={{
+                          render: (_: any, dom: any) => {
+            
+                            if (mode === 'view') {
+                              return null
+                            } else {
+                              return dom
+                            }
+                          },
+                        }}
+                      />
+                      {(mode==='view' && showEditButton)&& (
+                        <PermissionButton buttonText='编辑' url={editUrl} buttonType="url" code={editPermissionCode} >
+                        </PermissionButton>
+                      )}
+            
+                    </div>
+                    )
                 }
-              },
-            }}
-          />
-          {(mode==='view' && showEditButton)&& (
-            <PermissionButton buttonText='编辑' url={editUrl} buttonType="url" code={editPermissionCode} >
-            </PermissionButton>
-          )}
-
-        </div>
+            }
+        </Context.Consumer>
+       
 
       </ConfigProvider>
     )
