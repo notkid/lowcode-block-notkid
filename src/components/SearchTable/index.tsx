@@ -344,9 +344,9 @@ class SearchTable extends Component<IProTableProps, any> {
                   value = value[v]
                 })
                 if (exp?.conditionExpressionType === 'equals') {
-                  return value.toString() == exp.conditionExpressionValue
+                  return value?.toString() == exp.conditionExpressionValue
                 } else if (exp?.conditionExpressionType === 'notEquals') {
-                  return value.toString() != exp.conditionExpressionValue
+                  return value?.toString() != exp.conditionExpressionValue
                 }
               })
             }

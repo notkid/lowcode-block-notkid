@@ -161,6 +161,8 @@ class SchemaForm extends Component<IBetaSchemaFormProps, any> {
           consumerId: sessionStorage.getItem('consumerId')
         }
       })
+    } else {
+      this.formRef?.current?.resetFields()
     }
   }
 
